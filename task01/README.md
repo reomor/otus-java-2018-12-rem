@@ -17,5 +17,9 @@ java.exe -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01.ja
 java.exe -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01-jar-with-dependencies.jar rem.hw01.Application
 ```
 
+Комментарии:
+
+Плагин proguard удалось запустить только с jvm 1.8
+
 Материалы:
-- [Настройки плагина assembly](https://maven.apache.org/plugins/maven-assembly-plugin/single-mojo.html)
+> [Настройки плагина assembly](https://maven.apache.org/plugins/maven-assembly-plugin/single-mojo.html)
