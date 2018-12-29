@@ -15,6 +15,7 @@
 ```
 java.exe -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01.jar;C:\Users\User\.m2\repository\org\apache\commons\commons-text\1.1\commons-text-1.1.jar;C:\Users\User\.m2\repository\org\apache\commons\commons-lang3\3.8.1\commons-lang3-3.8.1.jar rem.hw01.Application
 java.exe -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01-jar-with-dependencies.jar rem.hw01.Application
+java -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01-obfuscated.jar rem.hw01.Application
 ```
 
 Комментарии:
