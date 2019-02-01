@@ -20,18 +20,18 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <index>true</index>
-                        <manifestFile>
+                        <!--<manifestFile>
                             MANIFEST.MF
-                        </manifestFile>
+                        </manifestFile>-->
                         <manifest>
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <!-- instead of MANIFEST.MF -->
-                        <!--<manifestEntries>
+                        <manifestEntries>
                             <Premain-Class>rem.hw02.MyAgent</Premain-Class>
                             <Can-Redefine-Classes>false</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                        </manifestEntries>-->
+                        </manifestEntries>
                     </archive>
                 </configuration>
                 <executions>
