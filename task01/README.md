@@ -1,7 +1,6 @@
 #### ДЗ 01. Сборка и запуск проекта
 
 Задачи:
-
 - Создать проект под управлением maven в Intellij IDEA. 
 - Добавить зависимость на Google Guava/Apache Commons/библиотеку на ваш выбор.
 - Использовать библиотечные классы для обработки входных данных.
@@ -19,8 +18,7 @@ java -cp C:\Git\java\otus-java\otus-java-2018-12-rem\task01\target\task01-obfusc
 ```
 
 Комментарии:
-
-Плагин proguard удалось запустить только с jvm 1.8
+Плагин proguard удалось запустить только с jvm 1.8 (а можно и с 10 см. лекцию)
 
 Материалы:
 > [Настройки плагина assembly](https://maven.apache.org/plugins/maven-assembly-plugin/single-mojo.html)
