@@ -14,6 +14,7 @@
 ```
 
 Комментарии:
+<pre>
 Benchmark                                 Mode  Cnt     Score     Error  Units
 MyArrayListBechmark.testAddAtList         avgt    5   309.971 ? 385.054  us/op
 MyArrayListBechmark.testAddAtMyList       avgt    5  2499.746 ? 225.536  us/op
@@ -23,6 +24,7 @@ MyArrayListBechmark.testGetAtList         avgt    5     0.002 ?   0.001  us/op
 MyArrayListBechmark.testGetAtMyList       avgt    5     0.002 ?   0.001  us/op
 MyArrayListBechmark.testRemoveAtList      avgt    5   474.453 ?  22.714  us/op
 MyArrayListBechmark.testRemoveAtMyList    avgt    5   418.959 ?  35.679  us/op
+</pre>
 
 Материалы:
 https://www.baeldung.com/java-collections-complexity
