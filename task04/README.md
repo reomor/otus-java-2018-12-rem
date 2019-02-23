@@ -9,7 +9,7 @@
 
 Как запустить:
 ```
-& 'C:\Program Files\Java\jdk-11.0.1\bin\java.exe' -jar target\task04-1.0-SNAPSHOT.jar -Xms32m -Xmx32m -XX:MaxMetaspaceSize=32m -XX:+UseG1GC
+& 'C:\Program Files\Java\jdk-11.0.1\bin\java.exe' -Xms32m -Xmx32m -XX:MaxMetaspaceSize=32m -XX:+UseG1GC -jar target\task04-1.0-SNAPSHOT.jar 
 ```
 
 Комментарии:
