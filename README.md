@@ -18,5 +18,6 @@
 Разработка класса MyArrayList на основе интерфейса List<T> со сравнением производительности с ArrayList с помощью JMH
 
 #### Task 04
-#### [](https://github.com/reomor/otus-java-2018-12-rem/)
+#### [Измерение активности GC](https://github.com/reomor/otus-java-2018-12-rem/)
+
 
