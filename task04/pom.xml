@@ -27,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>rem.hw03.Application</mainClass>
+                            <mainClass>rem.hw04.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
