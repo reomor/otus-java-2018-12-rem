@@ -7,6 +7,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TestFramework {
+    public static void runTests(String clazzName) {
+        try {
+            Class clazz = Class.forName(clazzName);
+            runTests(clazz);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     public static void runTests(Class<?> clazz) {
         for (Method beforeAllMethod: ReflectionHelper.getStaticMethodsByAnnotation(clazz, BeforeAll.class)) {
             try {
