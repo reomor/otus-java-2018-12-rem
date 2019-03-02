@@ -1,10 +1,18 @@
 package rem.hw05;
 
-import rem.hw05.api.annotation.AfterEach;
-import rem.hw05.api.annotation.BeforeEach;
-import rem.hw05.api.annotation.Test;
+import rem.hw05.api.annotation.*;
 
 public class TestCase {
+    @BeforeAll
+    public static void beforeAll() {
+        System.out.println("before all");
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        System.out.println("after all");
+    }
+
     @BeforeEach
     public void before() {
         System.out.println("before each");

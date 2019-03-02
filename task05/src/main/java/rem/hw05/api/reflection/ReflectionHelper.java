@@ -1,10 +1,7 @@
 package rem.hw05.api.reflection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Arrays;
 
 /**
@@ -83,6 +80,13 @@ public final class ReflectionHelper {
             }
         }
         return null;
+    }
+
+    public static Method[] getStaticMethodsByAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClazz) {
+        return Arrays.stream(clazz.getMethods())
+                .filter(method -> method.isAnnotationPresent(annotationClazz))
+                .filter(method -> (method.getModifiers() & Modifier.STATIC) != 0)
+                .toArray(Method[]::new);
     }
 
     public static Method[] getMethodsByAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClazz) {
