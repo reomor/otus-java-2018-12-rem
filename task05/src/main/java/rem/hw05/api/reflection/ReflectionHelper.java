@@ -1,5 +1,6 @@
-package rem.hw05.reflection;
+package rem.hw05.api.reflection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,7 @@ public final class ReflectionHelper {
     private ReflectionHelper() {
     }
 
-    static <T> T instantiate(Class<T> type, Object... args) {
+    public static <T> T instantiate(Class<T> type, Object... args) {
         try {
             if (args.length == 0) {
                 final Constructor<T> constructor = type.getDeclaredConstructor();
@@ -66,7 +67,7 @@ public final class ReflectionHelper {
         }
     }
 
-    static Object callMethod(Object object, String name, Object... args) {
+    public static Object callMethod(Object object, String name, Object... args) {
         Method method = null;
         boolean isAccessible = true;
         try {
@@ -84,16 +85,15 @@ public final class ReflectionHelper {
         return null;
     }
 
+    public static Method[] getMethodsByAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClazz) {
+        return Arrays.stream(clazz.getMethods())
+                .filter(method -> method.isAnnotationPresent(annotationClazz))
+                .toArray(Method[]::new);
+    }
+
     private static Class<?>[] toClasses(Object[] args) {
         return Arrays.stream(args)
-                //.map(Object::getClass)
-                .map(o -> o.getClass())
+                .map(Object::getClass)
                 .toArray(Class<?>[]::new);
-                //.toArray(value -> new Class<?>(value));
-//        final Class<?>[] classes = new Class<?>[args.length];
-//        for (int i = 0; i < args.length; i++) {
-//            classes[i] = args[i].getClass();
-//        }
-//        return classes;
     }
 }
