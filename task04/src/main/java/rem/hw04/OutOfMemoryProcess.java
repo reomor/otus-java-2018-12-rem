@@ -3,10 +3,14 @@ package rem.hw04;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import static rem.hw04.Application.printGCPhaseStatistics;
-
 public class OutOfMemoryProcess extends Thread {
     private static Deque<String> queue = new LinkedBlockingDeque<>();
+    private GarbageCollectorStatistics statistics;
+
+    public OutOfMemoryProcess(GarbageCollectorStatistics statistics) {
+        super();
+        this.statistics = statistics;
+    }
 
     public void clearQueue() {
         queue.clear();
@@ -23,7 +27,7 @@ public class OutOfMemoryProcess extends Thread {
         try {
             while (true) {
                 for (int i = 0; i < 10; i++) {
-                    queue.push(String.valueOf(i));
+                    queue.push(new String(Integer.toString(i)));
                 }
                 for (int i = 0; i < 9; i++) {
                     queue.poll();
@@ -43,7 +47,7 @@ public class OutOfMemoryProcess extends Thread {
             } catch (InterruptedException ignore) {
             }
             System.out.println("Out of loop with OOM exception");
-            printGCPhaseStatistics();
+            statistics.printGCPhaseStatistics();
         }
     }
 }

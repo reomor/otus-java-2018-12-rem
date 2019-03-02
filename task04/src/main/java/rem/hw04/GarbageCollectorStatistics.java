@@ -7,21 +7,41 @@ import javax.management.NotificationFilter;
 import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summarizingLong;
 
-public class Application {
+public class GarbageCollectorStatistics {
     private final static List<GarbageCollectionNotificationInfo> gcNotifications = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public void gatherGCStatistics() {
         addGCNotificationHandlers();
-        OutOfMemoryProcess object = new OutOfMemoryProcess();
+        OutOfMemoryProcess object = new OutOfMemoryProcess(this);
         object.run();
     }
 
-    public static void printGCPhaseStatistics() {
+    /**
+     * Add notification listeners to garbage collector beans to collect information about events
+     */
+    private void addGCNotificationHandlers() {
+        for (GarbageCollectorMXBean gcBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+            ((NotificationEmitter) gcBean).addNotificationListener(
+                    (notification, handback) -> {
+                        GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
+                        gcNotifications.add(info);
+                    },
+                    (NotificationFilter) notification -> GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION.equals(notification.getType()),
+                    null
+            );
+        }
+    }
+
+    /**
+     * Prints statistics which contains group by GC name, group by minute number since JVM has started, and sum of durations
+     */
+    public void printGCPhaseStatistics() {
         System.out.println("|-------------------------------------------|");
         gcNotifications.stream().collect(
                 groupingBy(GarbageCollectionNotificationInfo::getGcName,
@@ -36,18 +56,5 @@ public class Application {
             });
             System.out.println("|-------------------------------------------|");
         });
-    }
-
-    private static void addGCNotificationHandlers() {
-        for (GarbageCollectorMXBean gcBean : ManagementFactory.getGarbageCollectorMXBeans()) {
-            ((NotificationEmitter) gcBean).addNotificationListener(
-                    (notification, handback) -> {
-                        GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-                        gcNotifications.add(info);
-                    },
-                    (NotificationFilter) notification -> GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION.equals(notification.getType()),
-                    null
-            );
-        }
     }
 }
