@@ -53,9 +53,9 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
     @Override
     public CacheElement<K, V> get(K key) {
-        SoftReference<CacheElement<K, V>> cacheElementSoftReference = softReferenceMap.get(key);
+        SoftReference<CacheElement<K, V>> elementSoftReference = softReferenceMap.get(key);
         CacheElement<K, V> element = null;
-        if((element = cacheElementSoftReference.get()) != null) {
+        if (elementSoftReference != null && (element = elementSoftReference.get()) != null) {
             element.refreshAccessTime();
             hitCount++;
         } else {
@@ -83,8 +83,11 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         return new TimerTask() {
             @Override
             public void run() {
-                CacheElement<K, V> cacheElement = softReferenceMap.get(key).get();
-                if (cacheElement == null || (timeFunction.apply(cacheElement) < System.currentTimeMillis())) {
+                SoftReference<CacheElement<K, V>> elementSoftReference = softReferenceMap.get(key);
+                CacheElement<K, V> element = null;
+                if (elementSoftReference == null ||
+                        (element = softReferenceMap.get(key).get()) == null ||
+                        (timeFunction.apply(element) < System.currentTimeMillis())) {
                     softReferenceMap.remove(key);
                     this.cancel();
                 }
