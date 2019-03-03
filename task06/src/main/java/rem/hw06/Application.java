@@ -1,14 +1,15 @@
 package rem.hw06;
 
 import rem.hw06.cache.CacheEngine;
-import rem.hw06.cache.CacheEngineImpl;
+import rem.hw06.cache.CacheEngineOnMonitor;
+import rem.hw06.cache.CacheEngineOnTimers;
 
 import java.util.Random;
 
 public class Application {
     public static void main(String[] args) {
         final int size = 64;
-        CacheEngine<Integer, Integer[]> cache = new CacheEngineImpl<>(size, 1000, 0);
+        CacheEngine<Integer, Integer[]> cache = new CacheEngineOnMonitor<>(size, 1000, 0);
         for (int i = 0; i < size; i++) {
             cache.put(i, new Integer[256 * 1024]);
         }
