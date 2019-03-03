@@ -1,6 +1,5 @@
 package rem.hw06;
 
-import rem.hw06.cache.CacheElement;
 import rem.hw06.cache.CacheEngine;
 import rem.hw06.cache.CacheEngineImpl;
 
@@ -11,11 +10,11 @@ public class Application {
         final int size = 64;
         CacheEngine<Integer, Integer[]> cache = new CacheEngineImpl<>(size, 1000, 0);
         for (int i = 0; i < size; i++) {
-            cache.put(new CacheElement<>(i, new Integer[256 * 1024]));
+            cache.put(i, new Integer[256 * 1024]);
         }
         for (int i = 0; i < size; i++) {
-            CacheElement<Integer, Integer[]> cacheElement = cache.get(i);
-            String format = String.format("key is: %s, value is: %d", i, cacheElement != null ? cacheElement.getValue().length : -1);
+            Integer[] cacheElement = cache.get(i);
+            String format = String.format("key is: %s, value is: %d", i, cacheElement != null ? cacheElement.length : -1);
             System.out.println(format);
         }
         System.out.println("Cache hits: " + cache.getHitCount());
@@ -32,7 +31,7 @@ public class Application {
                 e.printStackTrace();
             }
             nextInt = random.nextInt(size);
-            cache.put(new CacheElement<>(nextInt, new Integer[256 * 1024]));
+            cache.put(nextInt, new Integer[256 * 1024]);
         }
         System.out.println("Cache hits: " + cache.getHitCount());
         System.out.println("Cache misses: " + cache.getMissCount());

@@ -19,14 +19,52 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     public CacheEngineImpl(int maxElements, long lifeTimeMs, long idleTimeMs) {
         this.maxElements = maxElements;
         this.lifeTimeMs = lifeTimeMs > 0 ? lifeTimeMs : 0;
-        this.idleTimeMs = idleTimeMs > 0 ? idleTimeMs : 0;
+        this.idleTimeMs = lifeTimeMs > 0 ? 0 : idleTimeMs > 0 ? idleTimeMs : 0;
         this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0;
         this.hitCount = 0;
         this.missCount = 0;
     }
 
+    private class CacheElement<KK, VV> {
+        private final KK key;
+        private final VV value;
+        private final long creationTime;
+        private long lastAccessTime;
+
+        public CacheElement(KK key, VV value) {
+            this.key = key;
+            this.value = value;
+            this.creationTime = this.lastAccessTime = getCurrentTime();
+        }
+
+        protected long getCurrentTime() {
+            return System.currentTimeMillis();
+        }
+
+        public KK getKey() {
+            return key;
+        }
+
+        public VV getValue() {
+            return value;
+        }
+
+        public long getCreationTime() {
+            return creationTime;
+        }
+
+        public long getLastAccessTime() {
+            return lastAccessTime;
+        }
+
+        public void refreshAccessTime() {
+            this.lastAccessTime = getCurrentTime();
+        }
+    }
+
     @Override
-    public void put(CacheElement<K, V> element) {
+    public void put(K key,  V value) {
+        CacheElement<K, V> element = new CacheElement<>(key, value);
         // effectively remove random element if max size is reached
         if (softReferenceMap.size() == maxElements) {
             softReferenceMap.keySet()
@@ -36,15 +74,13 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
                     .ifPresent(softReferenceMap::remove);
         }
         // map allows null as a key
-        K key = element.getKey();
         softReferenceMap.put(key, new SoftReference<>(element));
 
         if (!isEternal) {
             if (lifeTimeMs != 0) {
                 TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> lifeElement.getCreationTime() + lifeTimeMs);
                 timer.schedule(lifeTimerTask, lifeTimeMs);
-            }
-            if (idleTimeMs != 0) {
+            } else if (idleTimeMs != 0) {
                 TimerTask idleTimerTask = getTimerTask(key, idleElement -> idleElement.getLastAccessTime() + idleTimeMs);
                 timer.schedule(idleTimerTask, idleTimeMs, idleTimeMs);
             }
@@ -52,16 +88,19 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     }
 
     @Override
-    public CacheElement<K, V> get(K key) {
+    public V get(K key) {
         SoftReference<CacheElement<K, V>> elementSoftReference = softReferenceMap.get(key);
         CacheElement<K, V> element = null;
         if (elementSoftReference != null && (element = elementSoftReference.get()) != null) {
             element.refreshAccessTime();
             hitCount++;
         } else {
+            // remove record from cache, because reference doesn't exist anymore
+            softReferenceMap.remove(key);
             missCount++;
+            return null;
         }
-        return element;
+        return element.value;
     }
 
     @Override
