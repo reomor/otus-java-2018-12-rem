@@ -13,11 +13,11 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     private final Map<K, SoftReference<CacheElement<K, V>>> softReferenceMap = new HashMap<>();
     private final Timer timer = new Timer();
 
-    public CacheEngineImpl(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
+    public CacheEngineImpl(int maxElements, long lifeTimeMs, long idleTimeMs) {
         this.maxElements = maxElements;
         this.lifeTimeMs = lifeTimeMs > 0 ? lifeTimeMs : 0;
         this.idleTimeMs = idleTimeMs > 0 ? idleTimeMs : 0;
-        this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0 || isEternal;
+        this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0;
     }
 
     @Override
@@ -54,6 +54,11 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
             element.refreshAccessTime();
         }
         return cacheElementSoftReference.get();
+    }
+
+    @Override
+    public void cancelScheduling() {
+        timer.cancel();
     }
 
     private TimerTask getTimerTask(final K key, Function<CacheElement<K, V>, Long> timeFunction) {
