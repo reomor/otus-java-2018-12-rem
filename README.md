@@ -28,3 +28,6 @@
 #### Task 06
 #### [Cache engine на основе soft references](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task06)
  
+ #### Task 07
+ #### [](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task07)
+ 
