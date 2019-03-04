@@ -16,7 +16,7 @@ public enum MoneyPar {
         this.nominal = nominal;
     }
 
-    public long getNominal() {
+    public Integer getNominal() {
         return nominal;
     }
 }
