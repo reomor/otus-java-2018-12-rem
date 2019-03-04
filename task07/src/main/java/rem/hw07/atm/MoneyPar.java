@@ -10,9 +10,9 @@ public enum MoneyPar {
     TWOTHOUSAND2000(2000),
     FIVETHOUSAND5000(5000);
 
-    private long nominal;
+    private int nominal;
 
-    private MoneyPar(long nominal) {
+    private MoneyPar(int nominal) {
         this.nominal = nominal;
     }
 

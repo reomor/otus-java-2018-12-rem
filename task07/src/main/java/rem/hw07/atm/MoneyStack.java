@@ -1,4 +1,27 @@
 package rem.hw07.atm;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MoneyStack {
+    private Map<MoneyPar, Integer> stack = new HashMap<>();
+
+    public MoneyStack() {
+        for (MoneyPar moneyPar : MoneyPar.values()) {
+            stack.put(moneyPar, 0);
+        }
+    }
+
+    public void add(MoneyPar moneyPar, int amount) {
+        stack.put(moneyPar, stack.getOrDefault(moneyPar, 0) + amount);
+    }
+
+    public Map getStack() {
+        return Collections.unmodifiableMap(stack);
+    }
+
+    public int sum() {
+        return stack.values().stream().mapToInt(Integer::intValue).sum();
+    }
 }
