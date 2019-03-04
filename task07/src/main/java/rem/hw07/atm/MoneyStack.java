@@ -22,6 +22,9 @@ public class MoneyStack {
     }
 
     public int sum() {
-        return stack.values().stream().mapToInt(Integer::intValue).sum();
+        return stack.entrySet().stream()
+                .map(entry -> entry.getKey().getNominal() * entry.getValue())
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 }
