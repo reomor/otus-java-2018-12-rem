@@ -17,7 +17,7 @@ public class MoneyStack {
         stack.put(moneyPar, stack.getOrDefault(moneyPar, 0) + amount);
     }
 
-    public Map getStack() {
+    public Map<MoneyPar, Integer> getStack() {
         return Collections.unmodifiableMap(stack);
     }
 
