@@ -69,10 +69,13 @@ class BankAtmTest extends AtmTest {
             "550, 2"
     })
     void getMoneyFrom(int sum, int amount) throws ImpossibleToIssue {
+        final int sumBefore = atm.balanceStack().sum();
         final MoneyStack moneyStack = atm.get(sum);
+        final int sumAfter = atm.balanceStack().sum();
+        assertEquals(sumAfter + sum, sumBefore);
         final int moneySum = moneyStack.sum();
         assertEquals(moneySum, sum);
-        final int moneyAmount = moneyStack.getStackAsMap().entrySet().stream().map(Map.Entry::getValue).mapToInt(value -> value).sum();
+        final int moneyAmount = moneyStack.getStackAsMap().values().stream().mapToInt(value -> value).sum();
         assertEquals(amount, moneyAmount);
     }
 

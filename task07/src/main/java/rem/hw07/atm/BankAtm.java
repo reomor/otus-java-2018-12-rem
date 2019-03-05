@@ -6,6 +6,10 @@ import java.util.*;
 
 public class BankAtm implements Atm {
     private Map<MoneyPar, Integer> cells = new HashMap<>();
+    private static List<MoneyPar> list = Arrays.asList(MoneyPar.values());
+    static {
+        list.sort((o1, o2) -> -o1.getNominal().compareTo(o2.getNominal()));
+    }
 
     public BankAtm() {
         for(MoneyPar moneyPar : MoneyPar.values()) {
@@ -20,8 +24,9 @@ public class BankAtm implements Atm {
 
     @Override
     public MoneyStack get(int sum) throws ImpossibleToIssue {
-        List<MoneyPar> list = Arrays.asList(MoneyPar.values());
-        list.sort((o1, o2) -> -o1.getNominal().compareTo(o2.getNominal()));
+        if (balanceStack().sum() < sum) {
+            throw new ImpossibleToIssue();
+        }
         int divident = sum;
         MoneyStack moneyStack = new MoneyStack();
         for (MoneyPar moneyPar : list) {
@@ -34,6 +39,7 @@ public class BankAtm implements Atm {
         if (divident != 0) {
             throw new ImpossibleToIssue();
         }
+        reduce(moneyStack);
         return moneyStack;
     }
 
@@ -43,6 +49,20 @@ public class BankAtm implements Atm {
         } else {
             return 0;
         }
+    }
+
+    private void reduce(MoneyStack moneyStack) throws ImpossibleToIssue {
+        final Map<MoneyPar, Integer> stackAsMap = moneyStack.getStackAsMap();
+        for (Map.Entry<MoneyPar, Integer> entry : moneyStack.getStackAsMap().entrySet()) {
+            if (entry.getValue() < stackAsMap.get(entry.getKey())) {
+                throw new ImpossibleToIssue();
+            }
+        }
+        moneyStack.getStackAsMap()
+                .forEach((moneyPar, amount) -> {
+                    final Integer cellsAmount = cells.get(moneyPar);
+                    cells.put(moneyPar, cellsAmount - amount);
+                });
     }
 
     @Override
