@@ -11,9 +11,9 @@ public class Application {
         Atm atm = new BankAtm();
         atm.printBalance();
         MoneyStack moneyStack = new MoneyStack();
-        moneyStack.add(MoneyPar.FIVEHUNDRED500, 2);
-        moneyStack.add(MoneyPar.FIFTY50, 4);
-        moneyStack.add(MoneyPar.THOUSAND1000, 5);
+        moneyStack.add(MoneyPar.FIVEHUNDRED_500, 2);
+        moneyStack.add(MoneyPar.FIFTY_50, 4);
+        moneyStack.add(MoneyPar.THOUSAND_1000, 5);
         atm.put(moneyStack);
         MoneyStack moneyStackGot = null;
         try {

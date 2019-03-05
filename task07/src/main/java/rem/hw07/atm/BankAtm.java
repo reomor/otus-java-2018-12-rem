@@ -42,20 +42,25 @@ public class BankAtm implements Atm {
 
     @Override
     public void put(MoneyStack stack) {
-        stack.getStack().forEach((moneyPar, amount) -> cells.put(moneyPar, amount));
+        stack.getStackAsMap().forEach((moneyPar, amount) -> cells.put(moneyPar, amount));
     }
 
     @Override
-    public MoneyStack balance() {
+    public void put(MoneyPar moneyPar, int amount) {
+        cells.put(moneyPar, cells.getOrDefault(moneyPar, 0) + amount);
+    }
+
+    @Override
+    public MoneyStack balanceStack() {
         MoneyStack moneyStack = new MoneyStack();
         cells.forEach(moneyStack::add);
         return moneyStack;
     }
 
     public void printBalance() {
-        MoneyStack balance = this.balance();
+        MoneyStack balance = this.balanceStack();
         System.out.println("==================");
-        balance.getStack().forEach((moneyPar, amount) ->
+        balance.getStackAsMap().forEach((moneyPar, amount) ->
                 System.out.println(
                         String.format("%6d: %10d", moneyPar.getNominal(), amount)
                 )
