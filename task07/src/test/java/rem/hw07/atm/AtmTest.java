@@ -8,13 +8,13 @@ public abstract class AtmTest {
     @BeforeEach
     public void setUp() {
         moneyStack = new MoneyStack();
-        moneyStack.add(MoneyPar.TEN10, baseAmount);
-        moneyStack.add(MoneyPar.FIFTY50, baseAmount);
-        moneyStack.add(MoneyPar.HUNDRED100, baseAmount);
-        moneyStack.add(MoneyPar.TWOHUNDRED200, baseAmount);
-        moneyStack.add(MoneyPar.FIVEHUNDRED500, baseAmount);
-        moneyStack.add(MoneyPar.THOUSAND1000, baseAmount);
-        moneyStack.add(MoneyPar.TWOTHOUSAND2000, baseAmount);
-        moneyStack.add(MoneyPar.FIVETHOUSAND5000, baseAmount);
+        moneyStack.add(MoneyPar.TEN_10, baseAmount);
+        moneyStack.add(MoneyPar.FIFTY_50, baseAmount);
+        moneyStack.add(MoneyPar.HUNDRED_100, baseAmount);
+        moneyStack.add(MoneyPar.TWOHUNDRED_200, baseAmount);
+        moneyStack.add(MoneyPar.FIVEHUNDRED_500, baseAmount);
+        moneyStack.add(MoneyPar.THOUSAND_1000, baseAmount);
+        moneyStack.add(MoneyPar.TWOTHOUSAND_2000, baseAmount);
+        moneyStack.add(MoneyPar.FIVETHOUSAND_5000, baseAmount);
     }
 }
