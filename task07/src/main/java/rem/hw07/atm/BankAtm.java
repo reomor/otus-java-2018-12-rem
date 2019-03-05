@@ -13,6 +13,11 @@ public class BankAtm implements Atm {
         }
     }
 
+    public BankAtm(MoneyStack moneyStack) {
+        this();
+        moneyStack.getStackAsMap().forEach((moneyPar, amount) -> cells.put(moneyPar, amount));
+    }
+
     @Override
     public MoneyStack get(int sum) throws ImpossibleToIssue {
         List<MoneyPar> list = Arrays.asList(MoneyPar.values());
@@ -42,7 +47,7 @@ public class BankAtm implements Atm {
 
     @Override
     public void put(MoneyStack stack) {
-        stack.getStackAsMap().forEach((moneyPar, amount) -> cells.put(moneyPar, amount));
+        stack.getStackAsMap().forEach((moneyPar, amount) -> cells.put(moneyPar, cells.getOrDefault(moneyPar, 0) + amount));
     }
 
     @Override
