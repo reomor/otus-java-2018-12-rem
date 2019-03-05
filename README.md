@@ -24,3 +24,7 @@
 #### Task 05
 #### [Тестовый фреймворк на аннотациях](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task05)
 Разработать тестовый фреймворк с использованием механизма reflection с поддержкой собственных аннотаций @Test, @BeforeEach, @AfterEach, @BeforeAll, @AfterAll 
+
+#### Task 06
+#### [Cache engine на основе soft references](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task06)
+ 
