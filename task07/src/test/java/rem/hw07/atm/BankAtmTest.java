@@ -54,7 +54,7 @@ class BankAtmTest extends AtmTest {
 
     @Test
     void getBalanceStack() {
-        final Map<MoneyPar, Integer> stackAsMap = atm.balanceStack().getStackAsMap();
+        final Map<MoneyPar, Integer> stackAsMap = new BankAtm().balanceStack().getStackAsMap();
         for (MoneyPar moneyPar : MoneyPar.values()) {
             assertEquals((Integer) 0, stackAsMap.get(moneyPar));
         }
