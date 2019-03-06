@@ -27,4 +27,8 @@
 
 #### Task 06
 #### [Cache engine на основе soft references](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task06)
+Реализовать cache engine на основе soft references
  
+#### Task 07
+#### [Эмулятор АТМ (банкомата)](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task07)
+Разработать класс АТМ (банкомат) с заданным функционалом
