@@ -14,7 +14,11 @@ public class Application {
         moneyStack.add(MoneyPar.FIVEHUNDRED_500, 2);
         moneyStack.add(MoneyPar.FIFTY_50, 4);
         moneyStack.add(MoneyPar.THOUSAND_1000, 5);
-        atm.put(moneyStack);
+        try {
+            atm.put(moneyStack);
+        } catch (ImpossibleToIssue impossibleToIssue) {
+            impossibleToIssue.printStackTrace();
+        }
         MoneyStack moneyStackGot = null;
         try {
             moneyStackGot = atm.get(1550);

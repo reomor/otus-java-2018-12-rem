@@ -7,12 +7,13 @@ import java.util.*;
 public class BankAtm implements Atm {
     private Map<MoneyPar, Integer> cells = new HashMap<>();
     private static List<MoneyPar> list = Arrays.asList(MoneyPar.values());
+
     static {
         list.sort((o1, o2) -> -o1.getNominal().compareTo(o2.getNominal()));
     }
 
     public BankAtm() {
-        for(MoneyPar moneyPar : MoneyPar.values()) {
+        for (MoneyPar moneyPar : MoneyPar.values()) {
             cells.put(moneyPar, 0);
         }
     }
@@ -24,7 +25,7 @@ public class BankAtm implements Atm {
 
     @Override
     public MoneyStack get(int sum) throws ImpossibleToIssue {
-        if (balanceStack().sum() < sum) {
+        if (balanceStack().sum() < sum || sum < 0) {
             throw new ImpossibleToIssue();
         }
         int divident = sum;
@@ -53,25 +54,34 @@ public class BankAtm implements Atm {
 
     private void reduce(MoneyStack moneyStack) throws ImpossibleToIssue {
         final Map<MoneyPar, Integer> stackAsMap = moneyStack.getStackAsMap();
-        for (Map.Entry<MoneyPar, Integer> entry : moneyStack.getStackAsMap().entrySet()) {
+        for (Map.Entry<MoneyPar, Integer> entry : stackAsMap.entrySet()) {
             if (entry.getValue() < stackAsMap.get(entry.getKey())) {
                 throw new ImpossibleToIssue();
             }
         }
-        moneyStack.getStackAsMap()
-                .forEach((moneyPar, amount) -> {
-                    final Integer cellsAmount = cells.get(moneyPar);
-                    cells.put(moneyPar, cellsAmount - amount);
-                });
+        stackAsMap.forEach((moneyPar, amount) -> {
+            final Integer cellsAmount = cells.get(moneyPar);
+            cells.put(moneyPar, cellsAmount - amount);
+        });
     }
 
     @Override
-    public void put(MoneyStack stack) {
-        stack.getStackAsMap().forEach((moneyPar, amount) -> cells.put(moneyPar, cells.getOrDefault(moneyPar, 0) + amount));
-    }
+    public void put(MoneyStack moneyStack) throws ImpossibleToIssue {
+        final Map<MoneyPar, Integer> stackAsMap = moneyStack.getStackAsMap();
+        for (Map.Entry<MoneyPar, Integer> entry : stackAsMap.entrySet()) {
+            if (entry.getValue() < 0) {
+                throw new ImpossibleToIssue();
+            }
+        }
+        stackAsMap.forEach((moneyPar, amount) ->
+                cells.put(moneyPar, cells.getOrDefault(moneyPar, 0) + amount));
+}
 
     @Override
-    public void put(MoneyPar moneyPar, int amount) {
+    public void put(MoneyPar moneyPar, int amount) throws ImpossibleToIssue {
+        if (amount < 0) {
+            throw new ImpossibleToIssue();
+        }
         cells.put(moneyPar, cells.getOrDefault(moneyPar, 0) + amount);
     }
 

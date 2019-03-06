@@ -16,7 +16,7 @@ class BankAtmTest extends AtmTest {
     private Atm atm;
 
     @BeforeEach
-    public void setUpAtm() {
+    public void setUpAtm() throws ImpossibleToIssue {
         atm = new BankAtm();
         atm.put(moneyStack);
     }
@@ -35,7 +35,7 @@ class BankAtmTest extends AtmTest {
             "TWOTHOUSAND_2000, 50",
             "FIVETHOUSAND_5000, 100",
     })
-    void putMoneyPar(String moneyParString, int amount) {
+    void putMoneyPar(String moneyParString, int amount) throws ImpossibleToIssue {
         MoneyPar moneyPar = MoneyPar.valueOf(moneyParString);
         assertNotNull(moneyPar);
         final int currentAmount = moneyStack.getStackAsMap().get(moneyPar);
@@ -43,13 +43,32 @@ class BankAtmTest extends AtmTest {
         assertEquals((Integer)(currentAmount + amount), atm.balanceStack().getStackAsMap().get(moneyPar));
     }
 
+    @ParameterizedTest(name = "#{index} testAddNegativeMoneyParAmountToAtm({arguments})")
+    @CsvSource({
+            "TWOHUNDRED_200, -10",
+            "TWOTHOUSAND_2000, -50",
+            "FIVETHOUSAND_5000, -100",
+    })
+    void putNegativeMoneyParAmount(String moneyParString, int amount) throws ImpossibleToIssue {
+        MoneyPar moneyPar = MoneyPar.valueOf(moneyParString);
+        assertNotNull(moneyPar);
+        assertThrows(ImpossibleToIssue.class, () -> atm.put(moneyPar, amount));
+    }
+
     @Test
-    void putMoneyStack() {
+    void putMoneyStack() throws ImpossibleToIssue {
         final int currentSum = atm.balanceStack().sum();
         // add the same stack again
         atm.put(moneyStack);
         final int actualSum = atm.balanceStack().sum();
         assertEquals(currentSum * 2, actualSum);
+    }
+
+    @Test
+    void putMoneyStackWithNegativeAmount() {
+        final MoneyStack moneyStack = new MoneyStack();
+        moneyStack.add(MoneyPar.FIVEHUNDRED_500, -1);
+        assertThrows(ImpossibleToIssue.class, () -> atm.put(moneyStack));
     }
 
     @Test
