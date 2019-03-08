@@ -16,7 +16,7 @@ public class MoneyStack {
     }
 
     public void add(MoneyPar moneyPar, int amount) throws IncorrectMoneyAmount {
-        if (amount > 0) {
+        if (amount < 0) {
             throw new IncorrectMoneyAmount();
         }
         stack.put(moneyPar, stack.getOrDefault(moneyPar, 0) + amount);
