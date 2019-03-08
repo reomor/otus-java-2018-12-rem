@@ -6,16 +6,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class BankAtm implements Atm {
-    private Map<MoneyPar, Integer> cells = new HashMap<>();
+public class BankAtm implements AtmObserver {
+    private static AtomicInteger idGenerator = new AtomicInteger(1);
     private static List<MoneyPar> list = Arrays.asList(MoneyPar.values());
+
+    private Integer id;
+    private Map<MoneyPar, Integer> cells = new HashMap<>();
 
     static {
         list.sort((o1, o2) -> -o1.getNominal().compareTo(o2.getNominal()));
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public BankAtm() {
+        this.id = idGenerator.getAndIncrement();
         for (MoneyPar moneyPar : MoneyPar.values()) {
             cells.put(moneyPar, 0);
         }
@@ -104,5 +113,13 @@ public class BankAtm implements Atm {
                 )
         );
         System.out.println("==================");
+    }
+
+    @Override
+    public void resetBalance(MoneyStack moneyStack) {
+        final Map<MoneyPar, Integer> stackAsMap = moneyStack.getStackAsMap();
+        stackAsMap.forEach((moneyPar, amount) -> {
+            cells.put(moneyPar, amount);
+        });
     }
 }
