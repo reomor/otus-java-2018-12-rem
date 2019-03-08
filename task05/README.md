@@ -11,10 +11,3 @@
 TestFramework.runTests(Class clazz);
 TestFramework.runTests(String clazzName);
 ```
-
-Комментарии:
-
-Материалы:
-
-
-

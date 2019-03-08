@@ -14,5 +14,3 @@ java.exe -javaagent:..\..\agent\target\agent.jar -jar .\app-1.0-SNAPSHOT.jar
 
 Комментарии:
 Реализован вариант со статическим подключением агента
-
-Материалы:
