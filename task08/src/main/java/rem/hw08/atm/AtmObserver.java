@@ -1,5 +1,5 @@
 package rem.hw08.atm;
 
-public interface Observer extends Atm {
+public interface AtmObserver extends Atm {
     void resetBalance(MoneyStack moneyStack);
 }
