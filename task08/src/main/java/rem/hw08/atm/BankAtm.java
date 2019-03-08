@@ -105,14 +105,7 @@ public class BankAtm implements AtmObserver {
     }
 
     public void printBalance() {
-        MoneyStack balance = this.balanceStack();
-        System.out.println("==================");
-        balance.getStackAsMap().forEach((moneyPar, amount) ->
-                System.out.println(
-                        String.format("%6d: %10d", moneyPar.getNominal(), amount)
-                )
-        );
-        System.out.println("==================");
+        this.balanceStack().print();
     }
 
     @Override

@@ -43,4 +43,14 @@ public class MoneyStack {
                 .mapToInt(Integer::intValue)
                 .sum();
     }
+
+    public void print() {
+        System.out.println("==================");
+        stack.forEach((moneyPar, amount) ->
+                System.out.println(
+                        String.format("%6d: %10d", moneyPar.getNominal(), amount)
+                )
+        );
+        System.out.println("==================");
+    }
 }
