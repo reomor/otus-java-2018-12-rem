@@ -4,10 +4,14 @@ import org.hamcrest.core.IsNot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import rem.hw08.atm.exception.ImpossibleToIssue;
+import rem.hw08.atm.exception.IncorrectMoneyAmount;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +72,7 @@ class BankAtmTest extends AtmTest {
     void putMoneyStackWithNegativeAmount() {
         final MoneyStack moneyStack = new MoneyStack();
         moneyStack.add(MoneyPar.FIVEHUNDRED_500, -1);
-        assertThrows(ImpossibleToIssue.class, () -> atm.put(moneyStack));
+        assertThrows(IncorrectMoneyAmount.class, () -> atm.put(moneyStack));
     }
 
     @Test
@@ -96,6 +100,34 @@ class BankAtmTest extends AtmTest {
         assertEquals(moneySum, sum);
         final int moneyAmount = moneyStack.getStackAsMap().values().stream().mapToInt(value -> value).sum();
         assertEquals(amount, moneyAmount);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("moneyStackProvider")
+    void getMoneyFromWhenNotEnoughMoneyInSomeCells(MoneyStack expectedMoneyStack, int sum) throws ImpossibleToIssue {
+        final MoneyStack moneyStack = setMoneyStack(new int[]{1, 1, 4, 1, 1, 2, 2, 0});
+        atm = new BankAtm(moneyStack);
+        final Map<MoneyPar, Integer> actualMoneyStackAsMap = atm.get(sum).getStackAsMap();
+        final Map<MoneyPar, Integer> expectedMoneyStackAsMap = expectedMoneyStack.getStackAsMap();
+        for (Map.Entry<MoneyPar, Integer> entry : expectedMoneyStackAsMap.entrySet()) {
+            assertEquals(entry.getValue(), actualMoneyStackAsMap.get(entry.getKey()));
+        }
+    }
+
+    private static Stream<Arguments> moneyStackProvider() {
+        MoneyStack moneyStack1 = new MoneyStack();
+        moneyStack1.add(MoneyPar.FIFTY_50, 1);
+        moneyStack1.add(MoneyPar.HUNDRED_100, 2);
+        moneyStack1.add(MoneyPar.TWOHUNDRED_200, 1);
+        MoneyStack moneyStack2 = new MoneyStack();
+        moneyStack1.add(MoneyPar.HUNDRED_100, 2);
+        moneyStack1.add(MoneyPar.TWOHUNDRED_200, 1);
+        moneyStack1.add(MoneyPar.THOUSAND_1000, 2);
+        moneyStack1.add(MoneyPar.TWOTHOUSAND_2000, 1);
+        return Stream.of(
+                Arguments.of(moneyStack1, 450),
+                Arguments.of(moneyStack2, 4400)
+        );
     }
 
     @ParameterizedTest(name = "#{index} testGetMoneyWithImpossibleAmount({arguments})")
