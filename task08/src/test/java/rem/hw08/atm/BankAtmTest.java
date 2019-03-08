@@ -105,12 +105,14 @@ class BankAtmTest extends AtmTest {
     @ParameterizedTest()
     @MethodSource("moneyStackProvider")
     void getMoneyFromWhenNotEnoughMoneyInSomeCells(MoneyStack expectedMoneyStack, int sum) throws ImpossibleToIssue {
-        final MoneyStack moneyStack = setMoneyStack(new int[]{1, 1, 4, 1, 1, 2, 2, 0});
+        final MoneyStack moneyStack = setMoneyStack(new int[]{1, 1, 4, 1, 1, 2, 1, 0});
         atm = new BankAtm(moneyStack);
         final Map<MoneyPar, Integer> actualMoneyStackAsMap = atm.get(sum).getStackAsMap();
         final Map<MoneyPar, Integer> expectedMoneyStackAsMap = expectedMoneyStack.getStackAsMap();
         for (Map.Entry<MoneyPar, Integer> entry : expectedMoneyStackAsMap.entrySet()) {
-            assertEquals(entry.getValue(), actualMoneyStackAsMap.get(entry.getKey()));
+            if (entry.getValue() > 0) {
+                assertEquals(entry.getValue(), actualMoneyStackAsMap.get(entry.getKey()));
+            }
         }
     }
 
@@ -120,10 +122,10 @@ class BankAtmTest extends AtmTest {
         moneyStack1.add(MoneyPar.HUNDRED_100, 2);
         moneyStack1.add(MoneyPar.TWOHUNDRED_200, 1);
         MoneyStack moneyStack2 = new MoneyStack();
-        moneyStack1.add(MoneyPar.HUNDRED_100, 2);
-        moneyStack1.add(MoneyPar.TWOHUNDRED_200, 1);
-        moneyStack1.add(MoneyPar.THOUSAND_1000, 2);
-        moneyStack1.add(MoneyPar.TWOTHOUSAND_2000, 1);
+        moneyStack2.add(MoneyPar.HUNDRED_100, 2);
+        moneyStack2.add(MoneyPar.TWOHUNDRED_200, 1);
+        moneyStack2.add(MoneyPar.THOUSAND_1000, 2);
+        moneyStack2.add(MoneyPar.TWOTHOUSAND_2000, 1);
         return Stream.of(
                 Arguments.of(moneyStack1, 450),
                 Arguments.of(moneyStack2, 4400)

@@ -43,7 +43,7 @@ public class BankAtm implements AtmObserver {
         int divident = sum;
         MoneyStack moneyStack = new MoneyStack();
         for (MoneyPar moneyPar : list) {
-            int currentMoneyParAmount = calculateMaxAmount(divident, moneyPar.getNominal());
+            int currentMoneyParAmount = calculateMaxAmount(divident, moneyPar.getNominal(), cells.get(moneyPar));
             if (currentMoneyParAmount > 0) {
                 moneyStack.add(moneyPar, currentMoneyParAmount);
                 divident = divident - currentMoneyParAmount * moneyPar.getNominal();
@@ -56,9 +56,9 @@ public class BankAtm implements AtmObserver {
         return moneyStack;
     }
 
-    private int calculateMaxAmount(int sum, int term) {
+    private int calculateMaxAmount(int sum, int term, int maxAmount) {
         if (sum >= 0) {
-            return sum / term;
+            return (sum / term) > maxAmount ? maxAmount : sum / term;
         } else {
             return 0;
         }
