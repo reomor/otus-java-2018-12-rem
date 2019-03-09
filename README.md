@@ -32,3 +32,7 @@
 #### Task 07
 #### [Эмулятор АТМ (банкомата)](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task07)
 Разработать класс АТМ (банкомат) с заданным функционалом
+
+#### Task 08
+#### [ATM Department](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task08)
+Разработать класс ATM Department с заданным функционалом
