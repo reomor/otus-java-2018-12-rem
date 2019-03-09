@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AtmTest {
     protected MoneyStack moneyStack = null;
-    private final int BASE_AMOUNT = 2;
+    protected final int BASE_AMOUNT = 2;
 
     @BeforeEach
     public void setUp() {

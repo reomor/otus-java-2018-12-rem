@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BankAtmTest extends AtmTest {
-    private Atm atm;
+    private AtmObserver atm;
 
     @BeforeEach
     public void setUpAtm() throws ImpossibleToIssue {
@@ -44,7 +44,7 @@ class BankAtmTest extends AtmTest {
         assertNotNull(moneyPar);
         final int currentAmount = moneyStack.getStackAsMap().get(moneyPar);
         atm.put(moneyPar, amount);
-        assertEquals((Integer)(currentAmount + amount), atm.balanceStack().getStackAsMap().get(moneyPar));
+        assertEquals((Integer) (currentAmount + amount), atm.balanceStack().getStackAsMap().get(moneyPar));
     }
 
     @ParameterizedTest(name = "#{index} testAddNegativeMoneyParAmountToAtm({arguments})")
@@ -71,8 +71,7 @@ class BankAtmTest extends AtmTest {
     @Test
     void putMoneyStackWithNegativeAmount() {
         final MoneyStack moneyStack = new MoneyStack();
-        moneyStack.add(MoneyPar.FIVEHUNDRED_500, -1);
-        assertThrows(IncorrectMoneyAmount.class, () -> atm.put(moneyStack));
+        assertThrows(IncorrectMoneyAmount.class, () -> moneyStack.add(MoneyPar.FIVEHUNDRED_500, -1));
     }
 
     @Test
@@ -88,7 +87,7 @@ class BankAtmTest extends AtmTest {
             "1550, 3",
             "0, 0",
             "100, 1",
-            "4990, 10", //2000 x 2, 500 x 1, 200 x 2, 50 x 1, 10 x 4
+            "4970, 8", //2000 x 2, 500 x 1, 200 x 2, 50 x 1, 10 x 4
             "550, 2"
     })
     void getMoneyFrom(int sum, int amount) throws ImpossibleToIssue {
@@ -138,5 +137,16 @@ class BankAtmTest extends AtmTest {
     })
     void getMoneyWithException(int amount) {
         assertThrows(ImpossibleToIssue.class, () -> atm.get(amount));
+    }
+
+    @Test
+    void resetBalance() {
+        final int baseAmountBefore = super.BASE_AMOUNT;
+        final int expectedBaseAmount = 5;
+        atm.resetBalance(setMoneyStack(expectedBaseAmount));
+        for (Map.Entry<MoneyPar, Integer> entry : atm.balanceStack().getStackAsMap().entrySet()) {
+            assertEquals((Integer)expectedBaseAmount, entry.getValue());
+            assertNotEquals(baseAmountBefore, entry.getValue());
+        }
     }
 }

@@ -18,3 +18,5 @@
 - Observer — интерфейс, с помощью которого наблюдатель получает оповещение;
 - ConcreteObservable — конкретный класс, который реализует интерфейс Observable;
 - ConcreteObserver — конкретный класс, который реализует интерфейс Observer.
+
+[JUNIT5 library docs](https://junit.org/junit5/docs/current/user-guide/)
