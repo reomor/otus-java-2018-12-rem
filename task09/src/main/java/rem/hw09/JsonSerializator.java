@@ -2,12 +2,9 @@ package rem.hw09;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import rem.hw09.reflection.ReflectionHelper;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class JsonSerializator {
@@ -27,23 +24,27 @@ public class JsonSerializator {
         } else if (object instanceof Collection) {
             return collectionToJson(object).toJSONString();
         } else if (object instanceof Map) {
-            System.out.println("is map");
+            return mapToJson(object).toJSONString();
         } else {
             System.out.println("is class");
         }
         return "";
     }
 
+    private Object elementToJson(Object element) {
+        if (element instanceof Number || element instanceof Boolean || element instanceof String || element instanceof Character) {
+            return element;
+        } else {
+            return toJson(element);
+        }
+    }
+
     private JSONArray arrayToJson(Object array) {
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < Array.getLength(array); i++) {
             Object element = Array.get(array, i);
-            if (element instanceof Number || element instanceof Boolean || element instanceof String || element instanceof Character) {
-                jsonArray.add(element);
-            } else {
-                final String e = toJson(element);
-                jsonArray.add(e);
-            }
+            final Object elementToJson = elementToJson(element);
+            jsonArray.add(elementToJson);
         }
         return jsonArray;
     }
@@ -53,4 +54,11 @@ public class JsonSerializator {
         return arrayToJson(array);
     }
 
+    private JSONObject mapToJson(Object map) {
+        JSONObject jsonObject = new JSONObject();
+        ((Map) map).forEach((keyObject, valueObject) -> {
+            jsonObject.put(elementToJson(keyObject), elementToJson(valueObject));
+        });
+        return jsonObject;
+    }
 }
