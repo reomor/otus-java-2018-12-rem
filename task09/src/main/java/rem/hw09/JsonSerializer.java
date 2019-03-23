@@ -2,12 +2,15 @@ package rem.hw09;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import rem.hw09.reflection.ReflectionHelper;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 
-public class JsonSerializator {
+public class JsonSerializer {
     public String toJson(Object object) {
         if (object == null) {
             return "null";
@@ -26,16 +29,37 @@ public class JsonSerializator {
         } else if (object instanceof Map) {
             return mapToJson(object).toJSONString();
         } else {
-            System.out.println("is class");
+            return objectToJson(object).toJSONString();
         }
-        return "";
+    }
+
+    private Object innerToJson(Object object) {
+        if (object == null) {
+            return "null";
+        }
+        final Class<?> objectClass = object.getClass();
+        if (object instanceof Number) {
+            return String.valueOf(object);
+        } else if (object instanceof String || object instanceof Character) {
+            return "\"" + String.valueOf(object) + "\"";
+        } else if (object instanceof Boolean) {
+            return String.valueOf(object);
+        } else if (objectClass.isArray()) {
+            return arrayToJson(object);
+        } else if (object instanceof Collection) {
+            return collectionToJson(object);
+        } else if (object instanceof Map) {
+            return mapToJson(object);
+        } else {
+            return objectToJson(object);
+        }
     }
 
     private Object elementToJson(Object element) {
         if (element instanceof Number || element instanceof Boolean || element instanceof String || element instanceof Character) {
             return element;
         } else {
-            return toJson(element);
+            return innerToJson(element);
         }
     }
 
@@ -59,6 +83,24 @@ public class JsonSerializator {
         ((Map) map).forEach((keyObject, valueObject) -> {
             jsonObject.put(elementToJson(keyObject), elementToJson(valueObject));
         });
+        return jsonObject;
+    }
+
+    private JSONObject objectToJson(Object object) {
+        JSONObject jsonObject = new JSONObject();
+        Class<?> objectClass = object.getClass();
+        while (objectClass != null && objectClass != Object.class) {
+            final Field[] declaredFields = object.getClass().getDeclaredFields();
+            for (Field field : declaredFields) {
+                if (Modifier.isTransient(field.getModifiers())) {
+                    continue;
+                }
+                final String fieldName = field.getName();
+                final Object fieldValue = ReflectionHelper.getFieldValue(object, fieldName);
+                jsonObject.put(fieldName, elementToJson(fieldValue));
+            }
+            objectClass = objectClass.getSuperclass();
+        }
         return jsonObject;
     }
 }
