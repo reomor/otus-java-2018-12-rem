@@ -25,7 +25,7 @@ public class JsonSerializator {
         } else if (objectClass.isArray()) {
             return arrayToJson(object).toJSONString();
         } else if (object instanceof Collection) {
-            System.out.println("is collection");
+            return collectionToJson(object).toJSONString();
         } else if (object instanceof Map) {
             System.out.println("is map");
         } else {
@@ -34,10 +34,10 @@ public class JsonSerializator {
         return "";
     }
 
-    private JSONArray arrayToJson(Object object) {
+    private JSONArray arrayToJson(Object array) {
         JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < Array.getLength(object); i++) {
-            Object element = Array.get(object, i);
+        for (int i = 0; i < Array.getLength(array); i++) {
+            Object element = Array.get(array, i);
             if (element instanceof Number || element instanceof Boolean || element instanceof String || element instanceof Character) {
                 jsonArray.add(element);
             } else {
@@ -47,4 +47,10 @@ public class JsonSerializator {
         }
         return jsonArray;
     }
+
+    private JSONArray collectionToJson(Object collection) {
+        final Object[] array = ((Collection) collection).toArray();
+        return arrayToJson(array);
+    }
+
 }

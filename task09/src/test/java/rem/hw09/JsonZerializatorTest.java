@@ -3,6 +3,11 @@ package rem.hw09;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -114,6 +119,26 @@ public class JsonZerializatorTest {
         final A[] array = {new A(1), new A(2)};
         final String jsonStringExpected = "[]";
         final String jsonStringActual = serializator.toJson(array);
+        assertEquals(jsonStringExpected, jsonStringActual);
+    }
+
+    @Test
+    public void listPrimitiveTest() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        final String jsonStringExpected = "[1,2]";
+        final String jsonStringActual = serializator.toJson(list);
+        assertEquals(jsonStringExpected, jsonStringActual);
+    }
+
+    @Test
+    public void setPrimitiveTest() {
+        Set<String> set = new HashSet<>();
+        set.add("str1");
+        set.add("str2");
+        final String jsonStringExpected = "[\"str1\",\"str2\"]";
+        final String jsonStringActual = serializator.toJson(set);
         assertEquals(jsonStringExpected, jsonStringActual);
     }
 }
