@@ -99,6 +99,15 @@ public class JsonZerializerTest {
     }
 
     @Test
+    public void customClassWithInheritanceTest() {
+        Gson gson = new Gson();
+        final A customClass = new A();
+        final String jsonStringExpected = gson.toJson(customClass);
+        final String jsonStringActual = serializer.toJson(customClass);
+        assertEquals(jsonStringExpected, jsonStringActual);
+    }
+
+    @Test
     public void arrayPrimitiveTest() {
         final int[] array = {1, 2, 3, 4, 5};
         final String jsonStringExpected = "[1,2,3,4,5]";
@@ -117,7 +126,7 @@ public class JsonZerializerTest {
     @Test
     public void arrayClassTest() {
         final AA[] array = {new AA(1), new AA(2)};
-        final String jsonStringExpected = "[{\"i\":1},{\"i\":2}]";
+        final String jsonStringExpected = "[{\"innerI\":1},{\"innerI\":2}]";
         final String jsonStringActual = serializer.toJson(array);
         assertEquals(jsonStringExpected, jsonStringActual);
     }

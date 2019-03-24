@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class JsonSerializer {
@@ -29,7 +30,7 @@ public class JsonSerializer {
         } else if (object instanceof Map) {
             return mapToJson(object).toJSONString();
         } else {
-            return objectToJson(object).toJSONString();
+            return JSONObject.toJSONString(objectToJson(object));
         }
     }
 
@@ -41,7 +42,7 @@ public class JsonSerializer {
         if (object instanceof Number) {
             return String.valueOf(object);
         } else if (object instanceof String || object instanceof Character) {
-            return "\"" + String.valueOf(object) + "\"";
+            return String.valueOf(object);
         } else if (object instanceof Boolean) {
             return String.valueOf(object);
         } else if (objectClass.isArray()) {
@@ -56,7 +57,7 @@ public class JsonSerializer {
     }
 
     private Object elementToJson(Object element) {
-        if (element instanceof Number || element instanceof Boolean || element instanceof String || element instanceof Character) {
+        if (element instanceof Number || element instanceof Boolean) {
             return element;
         } else {
             return innerToJson(element);
@@ -80,27 +81,31 @@ public class JsonSerializer {
 
     private JSONObject mapToJson(Object map) {
         JSONObject jsonObject = new JSONObject();
-        ((Map) map).forEach((keyObject, valueObject) -> {
-            jsonObject.put(elementToJson(keyObject), elementToJson(valueObject));
-        });
+        ((Map) map).forEach((keyObject, valueObject) ->
+                jsonObject.put(elementToJson(keyObject), elementToJson(valueObject)));
         return jsonObject;
     }
 
-    private JSONObject objectToJson(Object object) {
-        JSONObject jsonObject = new JSONObject();
+    /**
+     * Because of inheritance JSONObject from HashMap the order of records is absent
+     * then we use LinkedHashMap
+     */
+    private Map<Object, Object> objectToJson(Object object) {
+        final Map<Object, Object> map = new LinkedHashMap<>();
         Class<?> objectClass = object.getClass();
         while (objectClass != null && objectClass != Object.class) {
-            final Field[] declaredFields = object.getClass().getDeclaredFields();
+            final Field[] declaredFields = objectClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 if (Modifier.isTransient(field.getModifiers())) {
                     continue;
                 }
-                final String fieldName = field.getName();
-                final Object fieldValue = ReflectionHelper.getFieldValue(object, fieldName);
-                jsonObject.put(fieldName, elementToJson(fieldValue));
+                final Object fieldValue = ReflectionHelper.getFieldValue(object, field);
+                if (fieldValue != null) {
+                    map.put(field.getName(), elementToJson(fieldValue));
+                }
             }
             objectClass = objectClass.getSuperclass();
         }
-        return jsonObject;
+        return map;
     }
 }

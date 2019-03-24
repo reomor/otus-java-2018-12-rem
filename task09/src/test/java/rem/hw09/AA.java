@@ -1,8 +1,8 @@
 package rem.hw09;
 
 public class AA {
-    private int i = 1;
-    public AA(int i) {
-        this.i = i;
+    private int innerI = 1;
+    public AA(int innerI) {
+        this.innerI = innerI;
     }
 }

@@ -1,5 +1,7 @@
 package rem.hw09.reflection;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Arrays;
@@ -28,15 +30,13 @@ public final class ReflectionHelper {
         return null;
     }
 
-    public static Object getFieldValue(Object object, String name) {
-        Field field = null;
+    public static Object getFieldValue(Object object, Field field) {
         boolean isAccessible = true;
         try {
-            field = object.getClass().getDeclaredField(name); //getField() for public fields
             isAccessible = field.canAccess(object);
             field.setAccessible(true);
             return field.get(object);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         } finally {
             if (field != null && !isAccessible) {
