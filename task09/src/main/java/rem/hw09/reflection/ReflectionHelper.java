@@ -61,6 +61,21 @@ public final class ReflectionHelper {
         }
     }
 
+    public static void setFieldValue(Object object, Field field, Object value) {
+        boolean isAccessible = true;
+        try {
+            isAccessible = field.canAccess(object);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
+            if (field != null && !isAccessible) {
+                field.setAccessible(false);
+            }
+        }
+    }
+
     public static Object callMethod(Object object, String name, Object... args) {
         Method method = null;
         boolean isAccessible = true;

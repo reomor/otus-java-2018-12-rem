@@ -22,7 +22,7 @@ public class JsonDeserializer {
         return null;
     }
 
-    public <T> T fromJson(String jsonString, Class<T> clazz, Class<?>[] componentClass) {
+    public <T> T fromJson(String jsonString, Class<T> clazz, Type[] componentClass) {
         JSONParser parser = new JSONParser();
         try {
             final Object parsedObject = parser.parse(jsonString);
@@ -45,17 +45,15 @@ public class JsonDeserializer {
         } else if (object instanceof Boolean) {
             return jsonToBoolean(object, clazz);
         } else if (object instanceof JSONArray) {
-            System.out.println("is array or collection");
             return jsonToArrayOrCollection(object, clazz);
         } else if (object instanceof JSONObject) {
-            System.out.println("is class or map");
-            return jsonToObject(object, clazz, null);
+            return jsonToObject(object, clazz);
         } else {
             throw new IllegalArgumentException("object class in unsupported");
         }
     }
 
-    private <T> T innerFromJson(Object object, Class<T> clazz, Class[] componentClass) {
+    private <T> T innerFromJson(Object object, Class<T> clazz, Type[] componentClass) {
         if (object == null) {
             return null;
         } else if (object instanceof JSONArray) {
@@ -67,7 +65,7 @@ public class JsonDeserializer {
                 return jsonToMap(object, clazz, componentClass);
             } else {
                 System.out.println("another class");
-                return jsonToObject(object, clazz, componentClass);
+                return jsonToObject(object, clazz);
             }
         } else {
             throw new IllegalArgumentException("object class is unsupported");
@@ -134,49 +132,69 @@ public class JsonDeserializer {
         return arrayObject;
     }
 
-    private <T> T jsonToGenericCollection(Object object, Class<T> clazz, Class[] componentClazz) {
+    private <T> T jsonToGenericCollection(Object object, Class<T> clazz, Type[] componentTypes) {
         JSONArray jsonArray = (JSONArray) object;
         T arrayObject = null;
         if (Collection.class.isAssignableFrom(clazz)) {
             arrayObject = ReflectionHelper.instantiate(clazz);
             Collection arrayObjectCollection = (Collection) arrayObject;
             jsonArray.forEach(element -> {
-                arrayObjectCollection.add(innerFromJson(element, componentClazz[0]));
+                try {
+                    final Class<?> componentClass = Class.forName(componentTypes[0].getTypeName());
+                    arrayObjectCollection.add(innerFromJson(element, componentClass));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             });
         }
         return arrayObject;
     }
 
-    private <T> T jsonToMap(Object object, Class<T> clazz, Class[] componentClazz) {
-        return null;
+    private <T> T jsonToMap(Object object, Class<T> clazz, Type[] componentTypes) {
+        JSONObject jsonObject = (JSONObject) object;
+        T mapObject = ReflectionHelper.instantiate(clazz);
+        if (Map.class.isAssignableFrom(clazz)) {
+            Map map = (Map) mapObject;
+            jsonObject.forEach((fieldKeyObj, fieldValueObj) -> {
+                try {
+                    final Class<?> valueClass = Class.forName(componentTypes[1].getTypeName());
+                    map.put(fieldKeyObj, valueClass.cast(fieldValueObj));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        return mapObject;
     }
 
-    private <T> T jsonToObject(Object object, Class<T> clazz, Class<?>[] componentClazz) {
+    private <T> T jsonToObject(Object object, Class<T> clazz) {
         JSONObject jsonObject = (JSONObject) object;
         T objectNew = ReflectionHelper.instantiate(clazz);
         jsonObject.forEach((fieldNameObj, fieldValueObj) -> {
             String fieldName = (String) fieldNameObj;
-            try {
-                Field declaredField = clazz.getDeclaredField(fieldName);
-                final Type genericFieldType = declaredField.getGenericType();
-                Class<?>[] componentType = null;
-                if (genericFieldType instanceof ParameterizedType) {
-                    final Type[] actualTypeArguments = ((ParameterizedType) genericFieldType).getActualTypeArguments();
-                    componentType = (Class<?>[]) actualTypeArguments;
+            Field declaredField = null;
+            Class<?> current = clazz;
+            while (true) {
+                try {
+                    declaredField = current.getDeclaredField(fieldName);
+                    break;
+                } catch (NoSuchFieldException e) {
+                    current = current.getSuperclass();
                 }
-                //clazz.getSuperclass()
-                // get field in superclass
-                Class type = ReflectionHelper.getFieldValue(objectNew, declaredField).getClass();
-                Object value = null;
-                if (componentType == null) {
-                    value = innerFromJson(fieldValueObj, type);
-                } else {
-                    value = innerFromJson(fieldValueObj, type, componentType);
-                }
-                ReflectionHelper.setFieldValue(objectNew, fieldName, value);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
             }
+            final Type genericFieldType = declaredField.getGenericType();
+            Type[] fieldComponentTypes = null;
+            if (genericFieldType instanceof ParameterizedType) {
+                fieldComponentTypes = ((ParameterizedType) genericFieldType).getActualTypeArguments();
+            }
+            Class type = ReflectionHelper.getFieldValue(objectNew, declaredField).getClass();
+            Object value = null;
+            if (fieldComponentTypes == null) {
+                value = innerFromJson(fieldValueObj, type);
+            } else {
+                value = innerFromJson(fieldValueObj, type, fieldComponentTypes);
+            }
+            ReflectionHelper.setFieldValue(objectNew, declaredField, value);
         });
         return objectNew;
     }
