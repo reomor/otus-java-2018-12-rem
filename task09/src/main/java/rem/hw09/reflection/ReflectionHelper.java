@@ -1,7 +1,5 @@
 package rem.hw09.reflection;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Arrays;
