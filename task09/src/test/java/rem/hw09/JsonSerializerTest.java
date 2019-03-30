@@ -9,7 +9,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JsonZerializerTest {
+public class JsonSerializerTest {
     private JsonSerializer serializer;
 
     @BeforeEach
