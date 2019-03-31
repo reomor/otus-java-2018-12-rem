@@ -53,18 +53,15 @@ public class JsonDeserializer {
         }
     }
 
-    private <T> T innerFromJson(Object object, Class<T> clazz, Type[] componentClass) {
+    private <T> T innerFromJson(Object object, Class<T> clazz, Type[] componentTypes) {
         if (object == null) {
             return null;
         } else if (object instanceof JSONArray) {
-            return jsonToGenericCollection(object, clazz, componentClass);
+            return jsonToGenericCollection(object, clazz, componentTypes);
         } else if (object instanceof JSONObject) {
-            System.out.println("json object");
             if (Map.class.isAssignableFrom(clazz)) {
-                System.out.println("is map");
-                return jsonToMap(object, clazz, componentClass);
+                return jsonToMap(object, clazz, componentTypes);
             } else {
-                System.out.println("another class");
                 return jsonToObject(object, clazz);
             }
         } else {
@@ -123,10 +120,8 @@ public class JsonDeserializer {
         } else if (Collection.class.isAssignableFrom(clazz)) {
             arrayObject = ReflectionHelper.instantiate(clazz);
             Collection arrayObjectCollection = (Collection) arrayObject;
-            Class componentType = null; // find
-            /*TODO*/
             jsonArray.forEach(element ->
-                    arrayObjectCollection.add(innerFromJson(element, componentType))
+                    arrayObjectCollection.add(innerFromJson(element, Object.class))
             );
         }
         return arrayObject;
@@ -157,14 +152,37 @@ public class JsonDeserializer {
             Map map = (Map) mapObject;
             jsonObject.forEach((fieldKeyObj, fieldValueObj) -> {
                 try {
-                    final Class<?> valueClass = Class.forName(componentTypes[1].getTypeName());
-                    map.put(fieldKeyObj, valueClass.cast(fieldValueObj));
+                    Class<?> keyClass = (componentTypes != null && componentTypes.length >= 1) ? Class.forName(componentTypes[0].getTypeName()) : Object.class;
+                    Class<?> valueClass = (componentTypes != null && componentTypes.length >= 2) ? Class.forName(componentTypes[1].getTypeName()) : Object.class;
+                    final Object key = convertObjToClass(fieldKeyObj, keyClass);
+                    final Object value = convertObjToClass(fieldValueObj, valueClass);
+                    map.put(key, value);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             });
         }
         return mapObject;
+    }
+
+    private <T> Object convertObjToClass(Object object, Class<T> clazz) {
+        if (object instanceof String) {
+            if (Number.class.isAssignableFrom(clazz)) {
+                return convertStringToNumber((String) object, clazz);
+            }
+        }
+        if (Number.class.isAssignableFrom(object.getClass())) {
+            return jsonToInt(object, clazz);
+        }
+        return object;
+    }
+
+    private <T> T convertStringToNumber(String string, Class<T> clazz) {
+        if (!Number.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException("is not a number");
+        }
+        Long value = Long.valueOf(string);
+        return jsonToInt(value, clazz);
     }
 
     private <T> T jsonToObject(Object object, Class<T> clazz) {

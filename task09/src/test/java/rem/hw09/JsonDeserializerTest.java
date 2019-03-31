@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,12 +48,23 @@ class JsonDeserializerTest {
     }
 
     @Test
+    public void setTest() {
+        final Set<Character> expected = new HashSet<>();
+        expected.add('A');
+        expected.add('B');
+        expected.add('C');
+        final String jsonString = "[\"A\",\"B\",\"C\"]";
+        final Set actual = deserializer.fromJson(jsonString, expected.getClass(), new Class[]{Character.class});
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     public void mapTest() {
         final Map<String, Integer> map = new HashMap<>();
         map.put("s1", 1);
         map.put("s2", 2);
         map.put("s3", 3);
-        final String jsonString = "{\"2key\":\"2value\",\"1key\":\"1value\"}";
+        final String jsonString = "{\"s1\":\"2value\",\"1key\":\"1value\"}";
         deserializer.fromJson(jsonString, HashMap.class, null);
     }
 
