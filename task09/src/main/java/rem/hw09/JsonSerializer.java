@@ -12,6 +12,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class JsonSerializer {
+    /**
+     * Converts object to JSOn string
+     * @param object - object for JSON representation
+     * @return string with JSON representation of object
+     */
     public String toJson(Object object) {
         if (object == null) {
             return "null";
@@ -34,6 +39,11 @@ public class JsonSerializer {
         }
     }
 
+    /**
+     * Inner convertation without toJSONString call for complex objects because it must be called only once
+     * @param object - object for JSON representation
+     * @return class String, JSONArray or JSONObject object
+     */
     private Object innerToJson(Object object) {
         if (object == null) {
             return "null";
@@ -87,6 +97,7 @@ public class JsonSerializer {
     }
 
     /**
+     * Converts object to LinkedHashMap.
      * Because of inheritance JSONObject from HashMap the order of records is absent
      * then we use LinkedHashMap
      */

@@ -11,6 +11,13 @@ import java.util.Collection;
 import java.util.Map;
 
 public class JsonDeserializer {
+    /**
+     * Reads class T object from jsonString
+     * @param jsonString - JSON string object representation
+     * @param clazz - target class
+     * @param <T> - generic target class parameter
+     * @return class T object or null if error
+     */
     public <T> T fromJson(String jsonString, Class<T> clazz) {
         JSONParser parser = new JSONParser();
         try {
@@ -22,6 +29,14 @@ public class JsonDeserializer {
         return null;
     }
 
+    /**
+     * Reads class T object from jsonString
+     * @param jsonString - JSON string object representation
+     * @param clazz - target class
+     * @param componentClass array with generic classes
+     * @param <T> - generic target class parameter
+     * @return class T object with generic parameters or null if error
+     */
     public <T> T fromJson(String jsonString, Class<T> clazz, Type[] componentClass) {
         JSONParser parser = new JSONParser();
         try {
