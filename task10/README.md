@@ -8,6 +8,6 @@
 - Создать абстрактный класс DataSet. Поместить long id в DataSet
 - Добавить класс UserDataSet (с полями, которые соответствуют таблице), унаследовав его от DataSet
 - Разработать Executor, который сохраняет наследников DataSet в базу и читает их из базы по id и классу
-- <T extends DataSet> void save(T user){…}
-- <T extends DataSet> T load(long id, Class<T> clazz){…}
+  * <T extends DataSet> void save(T user){…}
+  * <T extends DataSet> T load(long id, Class<T> clazz){…}
 - Проверить его работу на UserDataSet
