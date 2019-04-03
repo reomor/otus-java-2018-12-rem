@@ -7,6 +7,10 @@ public class UserDataSet extends DataSet {
     private String name;
     private byte age;
 
+    public UserDataSet() {
+        super(null);
+    }
+
     public UserDataSet(String name, byte age) {
         this.name = name;
         this.age = age;

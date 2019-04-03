@@ -1,12 +1,12 @@
 package rem.hw10.domain;
 
 public abstract class DataSet {
-    private long id;
+    private Long id;
 
     public DataSet() {
     }
 
-    public DataSet(long id) {
+    public DataSet(Long id) {
         this.id = id;
     }
 
