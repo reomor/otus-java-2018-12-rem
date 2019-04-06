@@ -32,4 +32,11 @@ public class UserDataSetDao implements DataSetDao {
             return objectList.get(0);
         });
     }
+
+    @Override
+    public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException {
+        final String selectStatement = OrmHelper.getSelectStatement(clazz);
+        return Executor.query(connection, selectStatement, resultSet ->
+                OrmHelper.extractList(resultSet, clazz));
+    }
 }

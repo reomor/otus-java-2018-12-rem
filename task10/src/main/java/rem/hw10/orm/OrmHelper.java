@@ -47,6 +47,14 @@ public class OrmHelper {
         return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%d", fields.toString(), clazz.getSimpleName(), id);
     }
 
+    public static <T extends DataSet> String getSelectStatement(Class<T> clazz) {
+        StringJoiner fields = new StringJoiner(",");
+        for (Field field : getObjectFieldsList(clazz)) {
+            fields.add(field.getName());
+        }
+        return String.format("SELECT %s FROM PUBLIC.%s", fields.toString(), clazz.getSimpleName());
+    }
+
     public static <T extends DataSet> List<T> extractList(ResultSet resultSet, Class<T> clazz) throws SQLException {
         List<T> objectList = new ArrayList<>();
         final List<Field> objectFieldsList = ReflectionHelper.getObjectFieldsList(clazz);

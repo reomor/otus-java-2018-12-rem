@@ -2,6 +2,8 @@ package rem.hw10.domain;
 
 import rem.hw10.annotation.DataSetEntity;
 
+import java.util.Objects;
+
 @DataSetEntity
 public class UserDataSet extends DataSet {
     private String name;
@@ -12,6 +14,11 @@ public class UserDataSet extends DataSet {
     }
 
     public UserDataSet(String name, int age) {
+        this(null, name, age);
+    }
+
+    public UserDataSet(Long id, String name, int age) {
+        super(id);
         this.name = name;
         this.age = age;
     }
@@ -39,5 +46,18 @@ public class UserDataSet extends DataSet {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        UserDataSet that = (UserDataSet) object;
+        return this.getId().equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), name, age);
     }
 }
