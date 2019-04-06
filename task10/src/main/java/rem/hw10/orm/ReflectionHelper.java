@@ -1,12 +1,13 @@
 package rem.hw10.orm;
 
+import rem.hw10.domain.DataSet;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-/**
- * Created by tully.
- */
 @SuppressWarnings({"SameParameterValue", "BooleanVariableAlwaysNegated"})
 public final class ReflectionHelper {
     private ReflectionHelper() {
@@ -42,6 +43,16 @@ public final class ReflectionHelper {
             }
         }
         return null;
+    }
+
+    public static <T extends DataSet> List<Field> getObjectFieldsList(Class<T> clazz) {
+        List<Field> fieldList = new ArrayList<>();
+        Class currentClazz = clazz;
+        while (currentClazz != null && !Object.class.equals(currentClazz)) {
+            fieldList.addAll(Arrays.asList(currentClazz.getDeclaredFields()));
+            currentClazz = currentClazz.getSuperclass();
+        }
+        return fieldList;
     }
 
     public static void setFieldValue(Object object, String name, Object value) {

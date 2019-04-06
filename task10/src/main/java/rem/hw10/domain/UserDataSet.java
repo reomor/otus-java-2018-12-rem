@@ -5,13 +5,13 @@ import rem.hw10.annotation.DataSetEntity;
 @DataSetEntity
 public class UserDataSet extends DataSet {
     private String name;
-    private byte age;
+    private int age;
 
     public UserDataSet() {
         super(null);
     }
 
-    public UserDataSet(String name, byte age) {
+    public UserDataSet(String name, int age) {
         this.name = name;
         this.age = age;
     }
@@ -24,11 +24,20 @@ public class UserDataSet extends DataSet {
         this.name = name;
     }
 
-    public byte getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(byte age) {
+    public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "id='" + super.getId() + '\'' +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
