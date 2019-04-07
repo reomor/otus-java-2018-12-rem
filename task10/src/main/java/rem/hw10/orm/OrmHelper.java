@@ -25,6 +25,18 @@ public class OrmHelper {
         return entityDefinition.selectByIdStatement(id);
     }
 
+    public static <T extends DataSet> String getEntityInsertPrepareStatement(T dataSet) {
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(dataSet.getClass());
+        return entityDefinition.insertPreparedStatement();
+    }
+
+    public static <T extends DataSet> String getEntitySelectPrepareStatement(long id, Class<T> clazz) {
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(clazz);
+        return entityDefinition.selectByIdPreparedStatement(id);
+    }
+
     public static <T extends DataSet> String getSelectStatement(Class<T> clazz) {
         final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
                 .getDataSetEntityDefinition(clazz);
@@ -43,6 +55,11 @@ public class OrmHelper {
             objectList.add(object);
         }
         return objectList;
+    }
+
+    public static EntityDefinition getObjectEntityDefinition(Class<? extends DataSet> clazz) {
+        return OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(clazz);
     }
 
     private static Object getObjectForField(ResultSet resultSet, Field field) throws SQLException {

@@ -51,10 +51,30 @@ public class EntityDefinition {
         return fieldsValues.toString();
     }
 
-    private String getJoinedPreparedFieldValues(String ... ignored) {
-        final int ignoredSize = ignored.length;
+    public Map<Field, Object> getFieldsWithValuesMap(DataSet dataSet, String ... ignored) {
+        Set<String> ignoredSet = new HashSet<>(Arrays.asList(ignored));
+        Map<Field, Object> fieldsWithValues = new LinkedHashMap<>();
+        for (Field field : classFieldList) {
+            final Object fieldValue = ReflectionHelper.getFieldValue(dataSet, field);
+            if (fieldValue == null || ignoredSet.contains(field.getName())) {
+                continue;
+            }
+            fieldsWithValues.put(field, fieldValue);
+        }
+        return fieldsWithValues;
+    }
+
+    private String getJoinedPreparedFieldValues(Object ... args) {
         StringJoiner stringJoiner = new StringJoiner(",");
-        for (int i = 0; i < getClassFieldList().size() - ignoredSize; i++) {
+        for (int i = 0; i < args.length; i++) {
+            stringJoiner.add("?");
+        }
+        return stringJoiner.toString();
+    }
+
+    private String getJoinedPreparedFieldValues(int numberOfArgs) {
+        StringJoiner stringJoiner = new StringJoiner(",");
+        for (int i = 0; i < numberOfArgs; i++) {
             stringJoiner.add("?");
         }
         return stringJoiner.toString();
@@ -85,10 +105,16 @@ public class EntityDefinition {
     }
 
     public String selectByIdPreparedStatement(long id) {
-        return "";
+        return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%s",
+                getJoinedFieldNames(),
+                getTableName(),
+                getJoinedPreparedFieldValues(id));
     }
 
     public String insertPreparedStatement() {
-        return "";
+        return String.format("INSERT INTO PUBLIC.%s (%s) VALUES (%s)",
+                getTableName(),
+                getJoinedFieldNames("id"),
+                getJoinedPreparedFieldValues(getClassFieldList().size() - 1));
     }
 }
