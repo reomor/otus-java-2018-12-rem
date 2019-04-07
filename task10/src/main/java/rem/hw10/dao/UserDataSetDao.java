@@ -1,6 +1,7 @@
 package rem.hw10.dao;
 
 import rem.hw10.domain.DataSet;
+import rem.hw10.exception.BaseDaoException;
 import rem.hw10.executor.Executor;
 import rem.hw10.orm.EntityDefinition;
 import rem.hw10.orm.OrmHelper;
@@ -40,7 +41,7 @@ public class UserDataSetDao implements DataSetDao {
         return Executor.query(prepareStatement, resultSet -> {
             final List<T> objectList = OrmHelper.extractList(resultSet, clazz);
             if (objectList.size() != 1) {
-                throw new RuntimeException("Non unique result or empty (number of records: " + objectList.size() + ")");
+                throw new BaseDaoException("Non unique result or empty (number of records: " + objectList.size() + ")");
             }
             return objectList.get(0);
         });
