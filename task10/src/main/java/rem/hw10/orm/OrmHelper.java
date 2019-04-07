@@ -16,26 +16,19 @@ public class OrmHelper {
     public static <T extends DataSet> String getEntityInsertStatement(T dataSet) {
         final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
                 .getDataSetEntityDefinition(dataSet.getClass());
-        return String.format("INSERT INTO PUBLIC.%s (%s) VALUES (%s)",
-                entityDefinition.getTableName(),
-                entityDefinition.getJoinedFieldNames(),
-                entityDefinition.getJoinedFieldValues());
+        return entityDefinition.insertStatement(dataSet);
     }
 
     public static <T extends DataSet> String getEntitySelectStatement(long id, Class<T> clazz) {
         final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
                 .getDataSetEntityDefinition(clazz);
-        return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%d",
-                entityDefinition.getJoinedFieldNames(),
-                entityDefinition.getTableName(),
-                id);
+        return entityDefinition.selectByIdStatement(id);
     }
 
     public static <T extends DataSet> String getSelectStatement(Class<T> clazz) {
-        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance().getDataSetEntityDefinition(clazz);
-        return String.format("SELECT %s FROM PUBLIC.%s",
-                entityDefinition.getJoinedFieldNames(),
-                entityDefinition.getTableName());
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(clazz);
+        return entityDefinition.selectStatement();
     }
 
     public static <T extends DataSet> List<T> extractList(ResultSet resultSet, Class<T> clazz) throws SQLException {

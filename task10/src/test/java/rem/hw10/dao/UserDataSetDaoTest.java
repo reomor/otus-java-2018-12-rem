@@ -48,7 +48,7 @@ class UserDataSetDaoTest {
 
     @Test
     @DisplayName("load all records from table UserDataSet")
-    public void should_ReturnNotEmptyListOfRecodrsWithKnownOne_WhenLoadAll() throws SQLException {
+    public void should_ReturnNotEmptyListOfRecordsWithKnownOne_WhenLoadAll() throws SQLException {
         final List<UserDataSet> actual = dataSetDao.loadAll(UserDataSet.class);
         assertTrue(actual.size() > 0);
         assertThat(actual, hasItems(expected));

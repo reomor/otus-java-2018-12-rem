@@ -3,8 +3,7 @@ package rem.hw10.orm;
 import rem.hw10.domain.DataSet;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class EntityDefinition {
     private Class<? extends DataSet> dataSetClazz;
@@ -21,23 +20,29 @@ public class EntityDefinition {
         return classFieldList;
     }
 
-    public String getJoinedFieldNames() {
+    public String getJoinedFieldNames(String ... ignored) {
+        Set<String> ignoredSet = new HashSet<>(Arrays.asList(ignored));
         StringJoiner stringJoiner = new StringJoiner(",");
         for (Field field : classFieldList) {
-            stringJoiner.add(field.getName());
+            final String fieldName = field.getName();
+            if (ignoredSet.contains(fieldName)) {
+                continue;
+            }
+            stringJoiner.add(fieldName);
         }
         return stringJoiner.toString();
     }
 
-    public String getJoinedFieldValues() {
+    public String getJoinedFieldValues(DataSet dataSet, String ... ignored) {
+        Set<String> ignoredSet = new HashSet<>(Arrays.asList(ignored));
         StringJoiner fieldsValues = new StringJoiner(",");
-        for (Field declaredField : classFieldList) {
-            final Object fieldValue = ReflectionHelper.getFieldValue(dataSetClazz, declaredField);
-            if (fieldValue == null) {
+        for (Field field : classFieldList) {
+            final Object fieldValue = ReflectionHelper.getFieldValue(dataSet, field);
+            if (fieldValue == null || ignoredSet.contains(field.getName())) {
                 continue;
             }
             String stringFieldValue = String.valueOf(fieldValue);
-            if (declaredField.getType().equals(String.class) || declaredField.getType().equals(Character.class)) {
+            if (field.getType().equals(String.class) || field.getType().equals(Character.class)) {
                 fieldsValues.add("'" + stringFieldValue + "'");
             } else {
                 fieldsValues.add(stringFieldValue);
@@ -46,7 +51,44 @@ public class EntityDefinition {
         return fieldsValues.toString();
     }
 
+    private String getJoinedPreparedFieldValues(String ... ignored) {
+        final int ignoredSize = ignored.length;
+        StringJoiner stringJoiner = new StringJoiner(",");
+        for (int i = 0; i < getClassFieldList().size() - ignoredSize; i++) {
+            stringJoiner.add("?");
+        }
+        return stringJoiner.toString();
+    }
+
     public String getTableName() {
         return tableName;
+    }
+
+    public String selectStatement() {
+        return String.format("SELECT %s FROM PUBLIC.%s",
+                getJoinedFieldNames(),
+                getTableName());
+    }
+
+    public String selectByIdStatement(long id) {
+        return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%d",
+                getJoinedFieldNames(),
+                getTableName(),
+                id);
+    }
+
+    public String insertStatement(DataSet dataSet) {
+        return String.format("INSERT INTO PUBLIC.%s (%s) VALUES (%s)",
+                getTableName(),
+                getJoinedFieldNames("id"),
+                getJoinedFieldValues(dataSet, "id"));
+    }
+
+    public String selectByIdPreparedStatement(long id) {
+        return "";
+    }
+
+    public String insertPreparedStatement() {
+        return "";
     }
 }
