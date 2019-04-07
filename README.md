@@ -36,3 +36,11 @@
 #### Task 08
 #### [ATM Department](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task08)
 Разработать класс ATM Department с заданным функционалом
+
+#### Task 09
+#### [JSON object writer](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task09)
+Разработать JSON object writer (object to JSON string) аналогичный gson с поддержкой указанных объектов
+
+#### Task 10
+#### [myORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task09)
+Разработать Executor и DAO для операций над наследниками класса DataSet
