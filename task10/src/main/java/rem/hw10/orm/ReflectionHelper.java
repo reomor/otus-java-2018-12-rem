@@ -1,5 +1,7 @@
 package rem.hw10.orm;
 
+import org.reflections.Reflections;
+import rem.hw10.annotation.DataSetEntity;
 import rem.hw10.domain.DataSet;
 
 import java.lang.annotation.Annotation;
@@ -7,9 +9,11 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings({"SameParameterValue", "BooleanVariableAlwaysNegated"})
 public final class ReflectionHelper {
+
     private ReflectionHelper() {
     }
 
@@ -116,6 +120,11 @@ public final class ReflectionHelper {
         return Arrays.stream(clazz.getMethods())
                 .filter(method -> method.isAnnotationPresent(annotationClazz))
                 .toArray(Method[]::new);
+    }
+
+    public static Set<Class<?>> getClassesByAnnotation(Class<? extends Annotation> annotationClazz) {
+        Reflections reflections = new Reflections("rem.hw10");
+        return reflections.getTypesAnnotatedWith(DataSetEntity.class);
     }
 
     private static Class<?>[] toClasses(Object[] args) {

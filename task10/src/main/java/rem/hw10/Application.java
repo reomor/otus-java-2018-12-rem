@@ -1,35 +1,28 @@
 package rem.hw10;
 
-import org.reflections.Reflections;
-import rem.hw10.annotation.DataSetEntity;
+import rem.hw10.dao.DataSetDao;
+import rem.hw10.dao.UserDataSetDao;
 import rem.hw10.dbcommon.ConnectionHelper;
+import rem.hw10.dbcommon.DBService;
+import rem.hw10.dbcommon.DBServiceImpl;
+import rem.hw10.domain.UserDataSet;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Set;
 
 public class Application {
     public static void main(String[] args) {
         try(final Connection connection = ConnectionHelper.getConnection()) {
-            System.out.println(connection.getMetaData().getDriverName());
+            DBService dbService = new DBServiceImpl(connection);
+            System.out.println(connection.getSchema());
+            dbService.createTables();
+            System.out.println(dbService.getConnectionMetaData());
+            DataSetDao dataSetDao = new UserDataSetDao(connection);
+            dataSetDao.save(new UserDataSet("name", 12));
+            final UserDataSet load = dataSetDao.load(0, UserDataSet.class);
+            System.out.println(load);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        // dbservice
-        Reflections reflections = new Reflections("rem.hw10");
-        Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(DataSetEntity.class);
-
-        for (Class<?> annotatedClass : annotatedClasses) {
-            System.out.println(annotatedClass.getName());
-            System.out.println(annotatedClass.getSimpleName());
-            Class clazz = annotatedClass;
-            while (clazz != null && !Object.class.equals(clazz)) {
-                for (Field declaredField : clazz.getDeclaredFields()) {
-                    System.out.println(declaredField.getName());
-                }
-                clazz = clazz.getSuperclass();
-            }
         }
     }
 }

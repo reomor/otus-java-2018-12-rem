@@ -1,10 +1,12 @@
 package rem.hw10.dbcommon;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import rem.hw10.annotation.DataSetEntity;
+import rem.hw10.orm.ReflectionHelper;
+
+import java.sql.*;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class DBServiceImpl implements DBService {
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS public.USERDATASET (\n" +
@@ -15,8 +17,9 @@ public class DBServiceImpl implements DBService {
     private static final String DROP_TABLE_USER = "DROP TABLE IF EXISTS public.USERDATASET;";
     private final Connection connection;
 
-    public DBServiceImpl(Connection connection) {
+    public DBServiceImpl(Connection connection) throws SQLException {
         this.connection = connection;
+        checkTablesExist();
     }
 
     @Override
@@ -34,7 +37,7 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public void createTables() throws SQLException {
-        try(final Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeQuery(CREATE_TABLE_USER);
         }
     }
@@ -43,6 +46,21 @@ public class DBServiceImpl implements DBService {
     public void deleteTables() throws SQLException {
         try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate(DROP_TABLE_USER);
+        }
+    }
+
+    private void checkTablesExist() throws SQLException {
+        final Set<Class<?>> classesByAnnotation = ReflectionHelper.getClassesByAnnotation(DataSetEntity.class);
+        final Set<String> classesByAnnotationNames = classesByAnnotation.stream()
+                .map(aClass -> aClass.getSimpleName().toUpperCase())
+                .collect(Collectors.toSet());
+        ResultSet res = connection.getMetaData()
+                .getTables(null, null, null, new String[]{"TABLE"});
+        while (res.next()) {
+            final String tableName = res.getString("TABLE_NAME").toUpperCase();
+            if(!classesByAnnotationNames.contains(tableName)) {
+                throw new SQLException(String.format("Table %s doesn't exist", tableName));
+            }
         }
     }
 
