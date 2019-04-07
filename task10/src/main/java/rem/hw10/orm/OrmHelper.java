@@ -7,52 +7,35 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
-
-import static rem.hw10.orm.ReflectionHelper.getObjectFieldsList;
 
 public class OrmHelper {
 
-    private OrmHelper() {}
+    private OrmHelper() {
+    }
 
     public static <T extends DataSet> String getEntityInsertStatement(T dataSet) {
-        final Class<? extends DataSet> dataSetClass = dataSet.getClass();
-        Class clazz = dataSetClass;
-        StringJoiner fields = new StringJoiner(",");
-        StringJoiner fieldsValues = new StringJoiner(",");
-        while (clazz != null && !Object.class.equals(clazz)) {
-            for (Field declaredField : clazz.getDeclaredFields()) {
-                final Object fieldValue = ReflectionHelper.getFieldValue(dataSet, declaredField);
-                if (fieldValue == null) {
-                    continue;
-                }
-                fields.add(declaredField.getName());
-                String stringFieldValue = String.valueOf(fieldValue);
-                if (declaredField.getType().equals(String.class) || declaredField.getType().equals(Character.class)) {
-                    fieldsValues.add("'" + stringFieldValue + "'");
-                } else {
-                    fieldsValues.add(stringFieldValue);
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return String.format("INSERT INTO PUBLIC.%s (%s) VALUES (%s)", dataSetClass.getSimpleName().toLowerCase(), fields, fieldsValues);
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(dataSet.getClass());
+        return String.format("INSERT INTO PUBLIC.%s (%s) VALUES (%s)",
+                entityDefinition.getTableName(),
+                entityDefinition.getJoinedFieldNames(),
+                entityDefinition.getJoinedFieldValues());
     }
 
     public static <T extends DataSet> String getEntitySelectStatement(long id, Class<T> clazz) {
-        StringJoiner fields = new StringJoiner(",");
-        for (Field field : getObjectFieldsList(clazz)) {
-            fields.add(field.getName());
-        }
-        return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%d", fields.toString(), clazz.getSimpleName(), id);
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance()
+                .getDataSetEntityDefinition(clazz);
+        return String.format("SELECT %s FROM PUBLIC.%s WHERE id=%d",
+                entityDefinition.getJoinedFieldNames(),
+                entityDefinition.getTableName(),
+                id);
     }
 
     public static <T extends DataSet> String getSelectStatement(Class<T> clazz) {
-        StringJoiner fields = new StringJoiner(",");
-        for (Field field : getObjectFieldsList(clazz)) {
-            fields.add(field.getName());
-        }
-        return String.format("SELECT %s FROM PUBLIC.%s", fields.toString(), clazz.getSimpleName());
+        final EntityDefinition entityDefinition = OrmEntityDefinitionCache.getInstance().getDataSetEntityDefinition(clazz);
+        return String.format("SELECT %s FROM PUBLIC.%s",
+                entityDefinition.getJoinedFieldNames(),
+                entityDefinition.getTableName());
     }
 
     public static <T extends DataSet> List<T> extractList(ResultSet resultSet, Class<T> clazz) throws SQLException {

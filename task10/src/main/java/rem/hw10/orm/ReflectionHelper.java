@@ -49,7 +49,7 @@ public final class ReflectionHelper {
         return null;
     }
 
-    public static <T extends DataSet> List<Field> getObjectFieldsList(Class<T> clazz) {
+    public static <T> List<Field> getObjectFieldsList(Class<T> clazz) {
         List<Field> fieldList = new ArrayList<>();
         Class currentClazz = clazz;
         while (currentClazz != null && !Object.class.equals(currentClazz)) {
