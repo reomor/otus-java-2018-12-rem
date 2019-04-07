@@ -39,4 +39,3 @@
 
 #### Task 09
 #### [](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task09)
-Р
