@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class DBServiceImpl implements DBService {
+public class DDLServiceImpl implements DDLService {
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS public.USERDATASET (\n" +
             "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
             "  name VARCHAR(255),\n" +
@@ -17,7 +17,7 @@ public class DBServiceImpl implements DBService {
     private static final String DROP_TABLE_USER = "DROP TABLE IF EXISTS public.USERDATASET;";
     private final Connection connection;
 
-    public DBServiceImpl(Connection connection) throws SQLException {
+    public DDLServiceImpl(Connection connection) throws SQLException {
         this.connection = connection;
         checkTablesExist();
     }

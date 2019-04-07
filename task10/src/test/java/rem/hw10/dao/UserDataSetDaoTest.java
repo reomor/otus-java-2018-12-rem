@@ -2,8 +2,8 @@ package rem.hw10.dao;
 
 import org.junit.jupiter.api.*;
 import rem.hw10.dbcommon.ConnectionHelper;
-import rem.hw10.dbcommon.DBService;
-import rem.hw10.dbcommon.DBServiceImpl;
+import rem.hw10.dbcommon.DDLService;
+import rem.hw10.dbcommon.DDLServiceImpl;
 import rem.hw10.domain.UserDataSet;
 
 import java.sql.Connection;
@@ -15,16 +15,17 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("UserDataSetDao must")
 class UserDataSetDaoTest {
     private static Connection connection;
-    private static DBService dbService;
+    private static DDLService DDLService;
     private static DataSetDao dataSetDao;
     private static UserDataSet expected;
 
     @BeforeAll
     public static void beforeAll() throws SQLException {
         connection = ConnectionHelper.getConnection();
-        dbService = new DBServiceImpl(connection);
+        DDLService = new DDLServiceImpl(connection);
         dataSetDao = new UserDataSetDao(connection);
         expected = new UserDataSet(0L, "expected", 20);
     }
@@ -36,24 +37,26 @@ class UserDataSetDaoTest {
 
     @BeforeEach
     public void setUp() throws SQLException {
-        dbService.createTables();
+        DDLService.createTables();
         dataSetDao.save(expected);
     }
 
     @AfterEach
     public void cleanUp() throws SQLException {
-        dbService.deleteTables();
+        DDLService.deleteTables();
     }
 
     @Test
-    public void loadAdd() throws SQLException {
+    @DisplayName("load all records from table UserDataSet")
+    public void should_ReturnNotEmptyListOfRecodrsWithKnownOne_WhenLoadAll() throws SQLException {
         final List<UserDataSet> actual = dataSetDao.loadAll(UserDataSet.class);
         assertTrue(actual.size() > 0);
         assertThat(actual, hasItems(expected));
     }
 
     @Test
-    public void save() throws SQLException {
+    @DisplayName("save one UserDataSet entity")
+    public void should_ReturnListWithNewUserDataSet_WhenSaveOne() throws SQLException {
         final List<UserDataSet> listBefore = dataSetDao.loadAll(UserDataSet.class);
         final UserDataSet one = new UserDataSet("one", 21);
         dataSetDao.save(one);
@@ -64,7 +67,8 @@ class UserDataSetDaoTest {
     }
 
     @Test
-    public void load() throws SQLException {
+    @DisplayName("load one UserDataSet entity by id")
+    public void should_ReturnOneUserDataSet_WhenLoadById() throws SQLException {
         final List<UserDataSet> list = dataSetDao.loadAll(UserDataSet.class);
         assertTrue(list.size() > 0);
         final UserDataSet userDataSet = list.get(0);

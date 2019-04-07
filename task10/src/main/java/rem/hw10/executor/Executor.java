@@ -15,4 +15,17 @@ public class Executor {
             statement.executeUpdate(update);
         }
     }
+
+    public static <T> T query(PreparedStatement preparedStatement, TResultHandler<T> handler) throws SQLException {
+        try (preparedStatement) {
+            final ResultSet result = preparedStatement.executeQuery();
+            return handler.handle(result);
+        }
+    }
+
+    public static void update(PreparedStatement preparedStatement) throws SQLException {
+        try(preparedStatement) {
+            preparedStatement.executeUpdate();
+        }
+    }
 }
