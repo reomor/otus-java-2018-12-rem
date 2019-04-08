@@ -49,5 +49,5 @@
 > JSON-simple
 
 #### Task 10
-#### [myORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task09)
+#### [myORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task10)
 Разработать Executor и DAO для операций над наследниками класса DataSet
