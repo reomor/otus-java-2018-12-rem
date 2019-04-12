@@ -1,10 +1,9 @@
 package rem.hw11.domain;
 
-import rem.hw11.annotation.DataSetEntity;
-
+import javax.persistence.Entity;
 import java.util.Objects;
 
-@DataSetEntity
+@Entity
 public class UserDataSet extends DataSet {
     private String name;
     private int age;

@@ -1,11 +1,11 @@
 package rem.hw11.dbcommon;
 
-import rem.hw11.annotation.DataSetEntity;
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dao.UserDataSetMyOrmDao;
 import rem.hw11.domain.DataSet;
 import rem.hw11.myorm.ReflectionHelper;
 
+import javax.persistence.Entity;
 import java.sql.*;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +71,7 @@ public class DBServiceMyOrmImpl implements DBService {
     }
 
     private void checkTablesExist() throws SQLException {
-        final Set<Class<?>> classesByAnnotation = ReflectionHelper.getClassesByAnnotation(DataSetEntity.class);
+        final Set<Class<?>> classesByAnnotation = ReflectionHelper.getClassesByAnnotation(Entity.class);
         final Set<String> classesByAnnotationNames = classesByAnnotation.stream()
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .collect(Collectors.toSet());

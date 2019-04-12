@@ -1,5 +1,8 @@
 package rem.hw11.domain;
 
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class DataSet {
     private Long id;
 

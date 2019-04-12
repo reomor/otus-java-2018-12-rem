@@ -1,8 +1,8 @@
 package rem.hw11.myorm;
 
 import org.reflections.Reflections;
-import rem.hw11.annotation.DataSetEntity;
 
+import javax.persistence.Entity;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public final class ReflectionHelper {
 
     public static Set<Class<?>> getClassesByAnnotation(Class<? extends Annotation> annotationClazz) {
         Reflections reflections = new Reflections("rem.hw10");
-        return reflections.getTypesAnnotatedWith(DataSetEntity.class);
+        return reflections.getTypesAnnotatedWith(Entity.class);
     }
 
     private static Class<?>[] toClasses(Object[] args) {
