@@ -1,9 +1,9 @@
-package rem.hw11.dbcommon;
+package rem.hw11.myorm;
 
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dao.UserDataSetMyOrmDao;
+import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.DataSet;
-import rem.hw11.myorm.ReflectionHelper;
 
 import javax.persistence.Entity;
 import java.sql.*;
@@ -48,12 +48,12 @@ public class DBServiceMyOrmImpl implements DBService {
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException {
-        return dataSetDao.load(id, clazz);
+        return (T) dataSetDao.load(id);
     }
 
     @Override
     public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException {
-        return dataSetDao.loadAll(clazz);
+        return (List<T>) dataSetDao.loadAll();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package rem.hw11.dao;
 
-import rem.hw11.domain.DataSet;
+import rem.hw11.domain.UserDataSet;
 import rem.hw11.exception.BaseDaoException;
 import rem.hw11.executor.Executor;
 import rem.hw11.myorm.EntityDefinition;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class UserDataSetMyOrmDao implements DataSetDao {
+public class UserDataSetMyOrmDao implements DataSetDao<UserDataSet> {
     private final Connection connection;
 
     public UserDataSetMyOrmDao(Connection connection) {
@@ -21,7 +21,7 @@ public class UserDataSetMyOrmDao implements DataSetDao {
     }
 
     @Override
-    public <T extends DataSet> void save(T dataSetEntity) throws SQLException {
+    public void save(UserDataSet dataSetEntity) throws SQLException {
         final String insertStatement = OrmHelper.getEntityInsertPrepareStatement(dataSetEntity);
         PreparedStatement prepareStatement = connection.prepareStatement(insertStatement);
         final EntityDefinition objectEntityDefinition = OrmHelper.getObjectEntityDefinition(dataSetEntity.getClass());
@@ -34,12 +34,13 @@ public class UserDataSetMyOrmDao implements DataSetDao {
     }
 
     @Override
-    public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException {
+    public UserDataSet load(long id) throws SQLException {
+        final Class<UserDataSet> clazz = getType();
         final String selectStatement = OrmHelper.getEntitySelectPrepareStatement(id, clazz);
         PreparedStatement prepareStatement = connection.prepareStatement(selectStatement);
         prepareStatement.setLong(1, id);
         return Executor.query(prepareStatement, resultSet -> {
-            final List<T> objectList = OrmHelper.extractList(resultSet, clazz);
+            final List<UserDataSet> objectList = OrmHelper.extractList(resultSet, clazz);
             if (objectList.size() != 1) {
                 throw new BaseDaoException("Non unique result or empty (number of records: " + objectList.size() + ")");
             }
@@ -48,9 +49,15 @@ public class UserDataSetMyOrmDao implements DataSetDao {
     }
 
     @Override
-    public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException {
+    public List<UserDataSet> loadAll() throws SQLException {
+        final Class<UserDataSet> clazz = getType();
         final String selectStatement = OrmHelper.getSelectStatement(clazz);
         return Executor.query(connection, selectStatement, resultSet ->
                 OrmHelper.extractList(resultSet, clazz));
+    }
+
+    @Override
+    public Class<UserDataSet> getType() {
+        return UserDataSet.class;
     }
 }

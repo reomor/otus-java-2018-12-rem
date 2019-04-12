@@ -4,7 +4,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
-import rem.hw11.dbcommon.DBServiceMyOrmImpl;
+import rem.hw11.myorm.DBServiceMyOrmImpl;
 import rem.hw11.domain.UserDataSet;
 
 import java.sql.Connection;
