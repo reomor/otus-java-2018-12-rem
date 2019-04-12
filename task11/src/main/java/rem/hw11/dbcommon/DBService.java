@@ -5,16 +5,18 @@ import rem.hw11.domain.DataSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface DBService {
+public interface DBService<T extends DataSet> {
     String getConnectionMetaData() throws SQLException;
 
-    <T extends DataSet> void save(T dataSetEntity) throws SQLException;
+    void save(T dataSetEntity) throws SQLException;
 
-    <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException;
+    T load(long id) throws SQLException;
 
-    <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException;
+    List<T> loadAll() throws SQLException;
 
     void createTables() throws SQLException;
 
     void deleteTables() throws SQLException;
+
+    Class<T> getType();
 }

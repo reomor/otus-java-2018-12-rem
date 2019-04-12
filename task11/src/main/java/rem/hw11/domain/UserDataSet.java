@@ -1,11 +1,17 @@
 package rem.hw11.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
+@Table(name = "user")
 public class UserDataSet extends DataSet {
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "age")
     private int age;
 
     public UserDataSet() {

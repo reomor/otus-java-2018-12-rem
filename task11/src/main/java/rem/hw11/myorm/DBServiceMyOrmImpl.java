@@ -3,7 +3,7 @@ package rem.hw11.myorm;
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dao.UserDataSetMyOrmDao;
 import rem.hw11.dbcommon.DBService;
-import rem.hw11.domain.DataSet;
+import rem.hw11.domain.UserDataSet;
 
 import javax.persistence.Entity;
 import java.sql.*;
@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class DBServiceMyOrmImpl implements DBService {
+public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS public.USERDATASET (\n" +
             "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
             "  name VARCHAR(255),\n" +
@@ -42,18 +42,18 @@ public class DBServiceMyOrmImpl implements DBService {
     }
 
     @Override
-    public <T extends DataSet> void save(T dataSetEntity) throws SQLException {
+    public void save(UserDataSet dataSetEntity) throws SQLException {
         dataSetDao.save(dataSetEntity);
     }
 
     @Override
-    public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException {
-        return (T) dataSetDao.load(id);
+    public UserDataSet load(long id) throws SQLException {
+        return (UserDataSet) dataSetDao.load(id);
     }
 
     @Override
-    public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException {
-        return (List<T>) dataSetDao.loadAll();
+    public List<UserDataSet> loadAll() throws SQLException {
+        return dataSetDao.loadAll();
     }
 
     @Override
@@ -68,6 +68,11 @@ public class DBServiceMyOrmImpl implements DBService {
         try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate(DROP_TABLE_USER);
         }
+    }
+
+    @Override
+    public Class<UserDataSet> getType() {
+        return UserDataSet.class;
     }
 
     private void checkTablesExist() throws SQLException {
