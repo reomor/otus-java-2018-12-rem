@@ -1,4 +1,4 @@
-package rem.hw11.orm;
+package rem.hw11.myorm;
 
 import org.reflections.Reflections;
 import rem.hw11.annotation.DataSetEntity;

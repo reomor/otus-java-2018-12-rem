@@ -3,8 +3,8 @@ package rem.hw11.dao;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import rem.hw11.dbcommon.ConnectionHelper;
-import rem.hw11.dbcommon.DDLService;
-import rem.hw11.dbcommon.DDLServiceImpl;
+import rem.hw11.dbcommon.DBService;
+import rem.hw11.dbcommon.DBServiceMyOrmImpl;
 import rem.hw11.domain.UserDataSet;
 
 import java.sql.Connection;
@@ -15,18 +15,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("UserDataSetDao must")
-class UserDataSetDaoTest {
+@DisplayName("UserDataSetMyOrmDao must")
+class UserDataSetMyOrmDaoTest {
     private static Connection connection;
-    private static DDLService DDLService;
+    private static DBService DBService;
     private static DataSetDao dataSetDao;
     private static UserDataSet expected;
 
     @BeforeAll
     public static void beforeAll() throws SQLException {
         connection = ConnectionHelper.getConnection();
-        DDLService = new DDLServiceImpl(connection);
-        dataSetDao = new UserDataSetDao(connection);
+        DBService = new DBServiceMyOrmImpl(connection);
+        dataSetDao = new UserDataSetMyOrmDao(connection);
         expected = new UserDataSet(0L, "expected", 20);
     }
 
@@ -37,13 +37,13 @@ class UserDataSetDaoTest {
 
     @BeforeEach
     public void setUp() throws SQLException {
-        DDLService.createTables();
+        DBService.createTables();
         dataSetDao.save(expected);
     }
 
     @AfterEach
     public void cleanUp() throws SQLException {
-        DDLService.deleteTables();
+        DBService.deleteTables();
     }
 
     @Test

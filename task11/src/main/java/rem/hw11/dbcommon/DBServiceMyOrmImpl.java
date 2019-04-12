@@ -1,14 +1,14 @@
 package rem.hw11.dbcommon;
 
 import rem.hw11.annotation.DataSetEntity;
-import rem.hw11.orm.ReflectionHelper;
+import rem.hw11.myorm.ReflectionHelper;
 
 import java.sql.*;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class DDLServiceImpl implements DDLService {
+public class DBServiceMyOrmImpl implements DBService {
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS public.USERDATASET (\n" +
             "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
             "  name VARCHAR(255),\n" +
@@ -17,7 +17,7 @@ public class DDLServiceImpl implements DDLService {
     private static final String DROP_TABLE_USER = "DROP TABLE IF EXISTS public.USERDATASET;";
     private final Connection connection;
 
-    public DDLServiceImpl(Connection connection) throws SQLException {
+    public DBServiceMyOrmImpl(Connection connection) throws SQLException {
         this.connection = connection;
         checkTablesExist();
     }

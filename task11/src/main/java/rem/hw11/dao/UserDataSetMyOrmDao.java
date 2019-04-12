@@ -3,8 +3,8 @@ package rem.hw11.dao;
 import rem.hw11.domain.DataSet;
 import rem.hw11.exception.BaseDaoException;
 import rem.hw11.executor.Executor;
-import rem.hw11.orm.EntityDefinition;
-import rem.hw11.orm.OrmHelper;
+import rem.hw11.myorm.EntityDefinition;
+import rem.hw11.myorm.OrmHelper;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -13,10 +13,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class UserDataSetDao implements DataSetDao {
+public class UserDataSetMyOrmDao implements DataSetDao {
     private final Connection connection;
 
-    public UserDataSetDao(Connection connection) {
+    public UserDataSetMyOrmDao(Connection connection) {
         this.connection = connection;
     }
 
