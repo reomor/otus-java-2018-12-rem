@@ -1,9 +1,13 @@
 package rem.hw11.dbcommon;
 
 import rem.hw11.annotation.DataSetEntity;
+import rem.hw11.dao.DataSetDao;
+import rem.hw11.dao.UserDataSetMyOrmDao;
+import rem.hw11.domain.DataSet;
 import rem.hw11.myorm.ReflectionHelper;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -16,9 +20,11 @@ public class DBServiceMyOrmImpl implements DBService {
             ");";
     private static final String DROP_TABLE_USER = "DROP TABLE IF EXISTS public.USERDATASET;";
     private final Connection connection;
+    private final DataSetDao dataSetDao;
 
     public DBServiceMyOrmImpl(Connection connection) throws SQLException {
         this.connection = connection;
+        this.dataSetDao = new UserDataSetMyOrmDao(connection);
         checkTablesExist();
     }
 
@@ -33,6 +39,21 @@ public class DBServiceMyOrmImpl implements DBService {
         joiner.add("Driver version: " + metaData.getDriverVersion());
         joiner.add("JDBC version: " + metaData.getJDBCMajorVersion() + '.' + metaData.getJDBCMinorVersion());
         return joiner.toString();
+    }
+
+    @Override
+    public <T extends DataSet> void save(T dataSetEntity) throws SQLException {
+        dataSetDao.save(dataSetEntity);
+    }
+
+    @Override
+    public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException {
+        return dataSetDao.load(id, clazz);
+    }
+
+    @Override
+    public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws SQLException {
+        return dataSetDao.loadAll(clazz);
     }
 
     @Override
