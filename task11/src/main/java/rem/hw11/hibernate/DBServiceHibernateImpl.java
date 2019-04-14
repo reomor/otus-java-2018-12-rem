@@ -12,6 +12,7 @@ import rem.hw11.dao.UserDataSetHibernateDao;
 import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.AddressDataSet;
+import rem.hw11.domain.PhoneDataSet;
 import rem.hw11.domain.UserDataSet;
 
 import java.sql.Connection;
@@ -27,6 +28,7 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
         Configuration configuration = new org.hibernate.cfg.Configuration();
         configuration.addAnnotatedClass(UserDataSet.class);
         configuration.addAnnotatedClass(AddressDataSet.class);
+        configuration.addAnnotatedClass(PhoneDataSet.class);
 
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         configuration.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");

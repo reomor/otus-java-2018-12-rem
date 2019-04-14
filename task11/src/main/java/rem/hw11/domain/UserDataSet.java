@@ -1,7 +1,7 @@
 package rem.hw11.domain;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
@@ -16,10 +16,17 @@ public class UserDataSet extends DataSet {
     @JoinColumn(name = "address_id")
     private AddressDataSet address;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<PhoneDataSet> phones;
+
     public UserDataSet() {
         super(null);
     }
 
+    public UserDataSet(String name, int age) {
+        this(null, name, age, null);
+    }
     public UserDataSet(String name, int age, AddressDataSet address) {
         this(null, name, age, address);
     }
@@ -53,6 +60,21 @@ public class UserDataSet extends DataSet {
 
     public void setAddress(AddressDataSet address) {
         this.address = address;
+    }
+
+    public List<PhoneDataSet> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(PhoneDataSet phone, PhoneDataSet ... phones) {
+        List<PhoneDataSet> list = new ArrayList<>();
+        list.add(phone);
+        list.addAll(Arrays.asList(phones));
+        setPhones(Collections.unmodifiableList(list));
+    }
+
+    public void setPhones(List<PhoneDataSet> phones) {
+        this.phones = phones.isEmpty() ? Collections.EMPTY_LIST : List.copyOf(phones);
     }
 
     @Override

@@ -6,37 +6,37 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "address")
-public class AddressDataSet extends DataSet {
-    @Column(name = "street")
-    private String street;
+@Table(name = "phone")
+public class PhoneDataSet extends DataSet {
+    @Column(name = "number")
+    private String number;
 
-    public AddressDataSet() {
+    public PhoneDataSet() {
         super(null);
     }
 
-    public AddressDataSet(String street) {
-        this(null, street);
+    public PhoneDataSet(String number) {
+        this(null, number);
     }
 
-    public AddressDataSet(Long id, String street) {
+    public PhoneDataSet(Long id, String number) {
         super(id);
-        this.street = street;
+        this.number = number;
     }
 
-    public String getStreet() {
-        return street;
+    public String getNumber() {
+        return number;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     @Override
     public String toString() {
-        return "AddressDataSet{" +
+        return "PhoneDataSet{" +
                 "id='" + super.getId() + '\'' +
-                ", street='" + street + '\'' +
+                ", number='" + number + '\'' +
                 '}';
     }
 
@@ -44,12 +44,12 @@ public class AddressDataSet extends DataSet {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        AddressDataSet that = (AddressDataSet) object;
+        PhoneDataSet that = (PhoneDataSet) object;
         return this.getId().equals(that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), street);
+        return Objects.hash(getId(), number);
     }
 }
