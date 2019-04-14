@@ -1,19 +1,23 @@
 package rem.hw11.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.ServiceRegistry;
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dao.UserDataSetHibernateDao;
+import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
-import rem.hw11.domain.DataSet;
 import rem.hw11.domain.UserDataSet;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DBServiceHibernateImpl implements DBService {
+public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     private final SessionFactory sessionFactory;
     private final DataSetDao<UserDataSet> dataSetDao;
 
@@ -45,22 +49,24 @@ public class DBServiceHibernateImpl implements DBService {
 
     @Override
     public String getConnectionMetaData() throws SQLException {
-        return null;
+        Connection connection = sessionFactory.getSessionFactoryOptions().getServiceRegistry().
+                getService(ConnectionProvider.class).getConnection();
+        return ConnectionHelper.getConnectionMetadata(connection);
     }
 
     @Override
-    public void save(DataSet dataSetEntity) throws SQLException {
-
+    public void save(UserDataSet dataSetEntity) throws SQLException {
+        dataSetDao.save(dataSetEntity);
     }
 
     @Override
-    public DataSet load(long id) throws SQLException {
-        return null;
+    public UserDataSet load(long id) throws SQLException {
+        return dataSetDao.load(id);
     }
 
     @Override
-    public List loadAll() throws SQLException {
-        return null;
+    public List<UserDataSet> loadAll() throws SQLException {
+        return dataSetDao.loadAll();
     }
 
 
@@ -71,11 +77,15 @@ public class DBServiceHibernateImpl implements DBService {
 
     @Override
     public void deleteTables() throws SQLException {
-        throw new UnsupportedOperationException("\"deleteTables\" operation is not supported");
+        try(Session session = sessionFactory.openSession()) {
+            final Transaction transaction = session.beginTransaction();
+            session.createNativeQuery("TRUNCATE SCHEMA PUBLIC RESTART IDENTITY AND COMMIT").executeUpdate();
+            transaction.commit();
+        }
     }
 
     @Override
     public Class getType() {
-        return null;
+        return UserDataSet.class;
     }
 }

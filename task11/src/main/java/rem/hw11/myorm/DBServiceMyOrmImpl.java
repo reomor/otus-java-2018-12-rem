@@ -2,6 +2,7 @@ package rem.hw11.myorm;
 
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dao.UserDataSetMyOrmDao;
+import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.UserDataSet;
 
@@ -9,7 +10,6 @@ import javax.persistence.Entity;
 import java.sql.*;
 import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
@@ -30,15 +30,7 @@ public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
 
     @Override
     public String getConnectionMetaData() throws SQLException {
-        final StringJoiner joiner = new StringJoiner("\n");
-        joiner.add("Autocommit: " + connection.getAutoCommit());
-        final DatabaseMetaData metaData = connection.getMetaData();
-        joiner.add("DB name: " + metaData.getDatabaseProductName());
-        joiner.add("DB version: " + metaData.getDatabaseProductVersion());
-        joiner.add("Driver name: " + metaData.getDriverName());
-        joiner.add("Driver version: " + metaData.getDriverVersion());
-        joiner.add("JDBC version: " + metaData.getJDBCMajorVersion() + '.' + metaData.getJDBCMinorVersion());
-        return joiner.toString();
+        return ConnectionHelper.getConnectionMetadata(connection);
     }
 
     @Override

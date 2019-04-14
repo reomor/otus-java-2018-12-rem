@@ -33,6 +33,7 @@ public class UserDataSetHibernateDao implements DataSetDao<UserDataSet> {
         return Executor.query(sessionFactory, session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             final CriteriaQuery<UserDataSet> criteria = builder.createQuery(getType());
+            criteria.from(getType());
             final Query<UserDataSet> query = session.createQuery(criteria);
             return query.list();
         });
