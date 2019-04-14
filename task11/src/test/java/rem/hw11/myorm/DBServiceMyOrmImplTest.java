@@ -2,11 +2,11 @@ package rem.hw11.myorm;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
+import rem.hw11.AbstractDBServiceTest;
 import rem.hw11.dbcommon.ConnectionHelper;
-import rem.hw11.dbcommon.DBService;
+import rem.hw11.domain.AddressDataSet;
 import rem.hw11.domain.UserDataSet;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,32 +15,24 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DBServiceMyOrmImpl must")
-class DBServiceMyOrmImplTest {
-    private static Connection connection;
-    private static DBService dbService;
-    private static UserDataSet expected;
-
+class DBServiceMyOrmImplTest extends AbstractDBServiceTest {
     @BeforeAll
-    public static void beforeAll() throws SQLException {
-        connection = ConnectionHelper.getConnection();
-        dbService = new DBServiceMyOrmImpl(connection);
-        expected = new UserDataSet(0L, "expected", 20);
-    }
-
-    @AfterAll
-    public static void afterAll() throws SQLException {
-        connection.close(); //TODO general close in dbservice
+    public static void beforeAll() {
+        try {
+            dbService = new DBServiceMyOrmImpl(ConnectionHelper.getConnection());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @BeforeEach
-    public void setUp() throws SQLException {
-        dbService.createTables();
-        dbService.save(expected);
-    }
-
-    @AfterEach
-    public void cleanUp() throws SQLException {
-        dbService.deleteTables();
+    public void setUp() {
+        try {
+            dbService.createTables();
+            dbService.save(expected);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -55,7 +47,8 @@ class DBServiceMyOrmImplTest {
     @DisplayName("save one UserDataSet entity")
     public void should_ReturnListWithNewUserDataSet_WhenSaveOne() throws SQLException {
         final List<UserDataSet> listBefore = dbService.loadAll();
-        final UserDataSet one = new UserDataSet("one", 21);
+        AddressDataSet addressDataSet = new AddressDataSet(0L,"Lenina, 1");
+        final UserDataSet one = new UserDataSet("one", 21, addressDataSet);
         dbService.save(one);
         final List<UserDataSet> listAfter = dbService.loadAll();
         one.setId((long) (listAfter.size() - 1));

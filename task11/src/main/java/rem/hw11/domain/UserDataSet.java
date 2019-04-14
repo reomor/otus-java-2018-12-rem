@@ -1,8 +1,6 @@
 package rem.hw11.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -14,18 +12,23 @@ public class UserDataSet extends DataSet {
     @Column(name = "age")
     private int age;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private AddressDataSet address;
+
     public UserDataSet() {
         super(null);
     }
 
-    public UserDataSet(String name, int age) {
-        this(null, name, age);
+    public UserDataSet(String name, int age, AddressDataSet address) {
+        this(null, name, age, address);
     }
 
-    public UserDataSet(Long id, String name, int age) {
+    public UserDataSet(Long id, String name, int age, AddressDataSet address) {
         super(id);
         this.name = name;
         this.age = age;
+        this.address = address;
     }
 
     public String getName() {
@@ -42,6 +45,14 @@ public class UserDataSet extends DataSet {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public AddressDataSet getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDataSet address) {
+        this.address = address;
     }
 
     @Override
