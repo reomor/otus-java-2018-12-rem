@@ -38,6 +38,7 @@ public class Executor {
         try(Session session = sessionFactory.openSession()) {
             final Transaction transaction = session.beginTransaction();
             final T result = function.apply(session);
+            session.flush();
             transaction.commit();
             return result;
         }

@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DBServiceHibernateImpl implements DBService<UserDataSet> {
+    final static String TRUNCATE_TABLES = "TRUNCATE SCHEMA PUBLIC RESTART IDENTITY AND COMMIT NO CHECK";
     private final SessionFactory sessionFactory;
     private final DataSetDao<UserDataSet> dataSetDao;
 
@@ -79,8 +80,15 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     public void deleteTables() throws SQLException {
         try(Session session = sessionFactory.openSession()) {
             final Transaction transaction = session.beginTransaction();
-            session.createNativeQuery("TRUNCATE SCHEMA PUBLIC RESTART IDENTITY AND COMMIT").executeUpdate();
+            session.createNativeQuery(TRUNCATE_TABLES).executeUpdate();
             transaction.commit();
+        }
+    }
+
+    @Override
+    public void closeConnection() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
         }
     }
 

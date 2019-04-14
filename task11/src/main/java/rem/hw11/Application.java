@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 public class Application {
     public static void main(String[] args) {
+        /*
         try(final Connection connection = ConnectionHelper.getConnection()) {
             DBService DBService = new DBServiceMyOrmImpl(connection);
             System.out.println(connection.getSchema());
@@ -25,5 +26,6 @@ public class Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        //*/
     }
 }

@@ -18,5 +18,7 @@ public interface DBService<T extends DataSet> {
 
     void deleteTables() throws SQLException;
 
+    void closeConnection();
+
     Class<T> getType();
 }
