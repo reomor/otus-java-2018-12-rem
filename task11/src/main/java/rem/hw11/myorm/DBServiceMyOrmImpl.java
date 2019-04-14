@@ -15,9 +15,21 @@ public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS public.USERDATASET (\n" +
             "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
             "  name VARCHAR(255),\n" +
-            "  age       INTEGER\n" +
+            "  age       INTEGER,\n" +
+            "  address_id   INTEGER FOREIGN KEY REFERENCES ADDRESSDATASET(id)" +
+            ");";
+    private static final String CREATE_TABLE_ADDRESS = "CREATE TABLE IF NOT EXISTS public.ADDRESSDATASET (\n" +
+            "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
+            "  street VARCHAR(255),\n" +
+            ");";
+    private static final String CREATE_TABLE_PHONE = "CREATE TABLE IF NOT EXISTS public.PHONEDATASET (\n" +
+            "  id        IDENTITY NOT NULL PRIMARY KEY,\n" +
+            "  number VARCHAR(255),\n" +
+            "  user_id INTEGER FOREIGN KEY REFERENCES USERDATASET(id)\n" +
             ");";
     private static final String DROP_TABLE_USER = "DROP TABLE IF EXISTS public.USERDATASET;";
+    private static final String DROP_TABLE_ADDRESS = "DROP TABLE IF EXISTS public.ADDRESSDATASET;";
+    private static final String DROP_TABLE_PHONE = "DROP TABLE IF EXISTS public.PHONEDATASET;";
     private final Connection connection;
     private final DataSetDao dataSetDao;
 
@@ -50,14 +62,18 @@ public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
     @Override
     public void createTables() throws SQLException {
         try (final Statement statement = connection.createStatement()) {
+            statement.executeQuery(CREATE_TABLE_ADDRESS);
             statement.executeQuery(CREATE_TABLE_USER);
+            statement.executeQuery(CREATE_TABLE_PHONE);
         }
     }
 
     @Override
     public void deleteTables() throws SQLException {
         try (final Statement statement = connection.createStatement()) {
+            statement.executeUpdate(DROP_TABLE_PHONE);
             statement.executeUpdate(DROP_TABLE_USER);
+            statement.executeUpdate(DROP_TABLE_ADDRESS);
         }
     }
 
