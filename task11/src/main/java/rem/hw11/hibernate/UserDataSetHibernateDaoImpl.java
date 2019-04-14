@@ -1,7 +1,8 @@
-package rem.hw11.dao;
+package rem.hw11.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import rem.hw11.dao.DataSetDao;
 import rem.hw11.domain.UserDataSet;
 import rem.hw11.executor.Executor;
 
@@ -9,10 +10,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
-public class UserDataSetHibernateDao implements DataSetDao<UserDataSet> {
+public class UserDataSetHibernateDaoImpl implements DataSetDao<UserDataSet> {
     private final SessionFactory sessionFactory;
 
-    public UserDataSetHibernateDao(SessionFactory sessionFactory) {
+    public UserDataSetHibernateDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

@@ -8,7 +8,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.ServiceRegistry;
 import rem.hw11.dao.DataSetDao;
-import rem.hw11.dao.UserDataSetHibernateDao;
 import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.AddressDataSet;
@@ -42,7 +41,7 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         sessionFactory = createSessionFactory(configuration);
-        dataSetDao = new UserDataSetHibernateDao(sessionFactory);
+        dataSetDao = new UserDataSetHibernateDaoImpl(sessionFactory);
     }
 
     private static SessionFactory createSessionFactory(Configuration configuration) {
@@ -76,12 +75,12 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
 
 
     @Override
-    public void createTables() throws SQLException {
+    public void createTables() {
         throw new UnsupportedOperationException("\"createTables\" operation is not supported");
     }
 
     @Override
-    public void deleteTables() throws SQLException {
+    public void deleteTables() {
         try(Session session = sessionFactory.openSession()) {
             final Transaction transaction = session.beginTransaction();
             session.createNativeQuery(TRUNCATE_TABLES).executeUpdate();

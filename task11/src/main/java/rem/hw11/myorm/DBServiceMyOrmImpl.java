@@ -1,7 +1,6 @@
 package rem.hw11.myorm;
 
 import rem.hw11.dao.DataSetDao;
-import rem.hw11.dao.UserDataSetMyOrmDao;
 import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.UserDataSet;
@@ -24,7 +23,7 @@ public class DBServiceMyOrmImpl implements DBService<UserDataSet> {
 
     public DBServiceMyOrmImpl(Connection connection) throws SQLException {
         this.connection = connection;
-        this.dataSetDao = new UserDataSetMyOrmDao(connection);
+        this.dataSetDao = new UserDataSetMyOrmDaoImpl(connection);
         checkTablesExist();
     }
 

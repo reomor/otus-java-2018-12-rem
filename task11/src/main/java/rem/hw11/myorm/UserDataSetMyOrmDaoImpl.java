@@ -1,5 +1,6 @@
-package rem.hw11.dao;
+package rem.hw11.myorm;
 
+import rem.hw11.dao.DataSetDao;
 import rem.hw11.domain.UserDataSet;
 import rem.hw11.exception.BaseDaoException;
 import rem.hw11.executor.Executor;
@@ -13,10 +14,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class UserDataSetMyOrmDao implements DataSetDao<UserDataSet> {
+public class UserDataSetMyOrmDaoImpl implements DataSetDao<UserDataSet> {
     private final Connection connection;
 
-    public UserDataSetMyOrmDao(Connection connection) {
+    public UserDataSetMyOrmDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
