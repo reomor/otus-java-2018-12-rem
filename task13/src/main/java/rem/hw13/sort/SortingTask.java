@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
+/**
+ * RecursiveAction task which divide array on smaller arrays depend on number of Threads {@param nThread}
+ * @param <T> generic type for array elements, extends {@link Comparable}
+ */
 public class SortingTask<T extends Comparable<T>> extends RecursiveAction {
     private int nThreads = 1;
     private int leftEdge;
@@ -31,13 +35,13 @@ public class SortingTask<T extends Comparable<T>> extends RecursiveAction {
     @Override
     protected void compute() {
         if (nThreads > 1) {
-            ForkJoinTask.invokeAll(createSubtasks());
+            ForkJoinTask.invokeAll(createSubTasks());
         } else {
             ParallelSortUtils.arraySort(array, leftEdge, rightEdge);
         }
     }
 
-    private Collection<SortingTask> createSubtasks() {
+    private Collection<SortingTask> createSubTasks() {
         List<SortingTask> subtasks = new ArrayList<>();
         if (nThreads < 1) return Collections.emptyList();
         int rangePerThread = array.length / nThreads;
