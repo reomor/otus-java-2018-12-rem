@@ -1,15 +1,14 @@
 package rem;
 
 import rem.bruteforce.BruteForceRunner;
+import rem.readwrite.ReadWriteThreads;
 
 public class Application {
     public static void main(String[] args) throws InterruptedException {
         //BruteForceRunner bruteForceRunner = new BruteForceRunner();
         //bruteForceRunner.start();
 
-        thread1.start();
-        thread2.start();
-        thread1.join();
-        thread2.join();
+        ReadWriteThreads readWriteThreads = new ReadWriteThreads(10);
+        readWriteThreads.start();
     }
 }
