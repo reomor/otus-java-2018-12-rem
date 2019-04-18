@@ -51,3 +51,7 @@
 #### Task 10
 #### [myORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task10)
 Разработать Executor и DAO для операций над наследниками класса DataSet
+
+#### Task 13
+#### [Multithread sort](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task10)
+Разработать приложение, которое сортирует массив чисел в нескольких потоках
