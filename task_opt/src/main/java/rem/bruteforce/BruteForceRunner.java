@@ -1,24 +1,21 @@
 package rem.bruteforce;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BruteForceRunner {
-    public void start() throws InterruptedException {
-        final int nThread = 4;
+    public void start(int nThread) throws InterruptedException {
+        if (nThread < 1) nThread = 1;
         ThreadSharedObject sharedObject = new ThreadSharedObject(5, nThread);
-        Thread thread1 = new Thread(new CountThread(sharedObject));
-        thread1.setName("1");
-        Thread thread2 = new Thread(new CountThread(sharedObject));
-        thread2.setName("2");
-        Thread thread3 = new Thread(new CountThread(sharedObject));
-        thread3.setName("3");
-        Thread thread4 = new Thread(new CountThread(sharedObject));
-        thread4.setName("4");
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        thread4.start();
-        thread1.join();
-        thread2.join();
-        thread3.join();
-        thread4.join();
+        List<Thread> list = new ArrayList<>();
+        for (int i = 0; i < nThread; i++) {
+            Thread thread = new Thread(new CountThread(sharedObject));
+            thread.setName(String.valueOf(i));
+            list.add(thread);
+        }
+        list.forEach(Thread::start);
+        for (Thread thread : list) {
+            thread.join();
+        }
     }
 }
