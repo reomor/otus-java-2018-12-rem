@@ -22,7 +22,6 @@ public class ThreadSharedObject {
         }
         if (requestsNumber < nThreads) {
             requestsNumber++;
-            //System.out.println(currentValue);
             return currentValue;
         } else {
             requestsNumber = 1;
