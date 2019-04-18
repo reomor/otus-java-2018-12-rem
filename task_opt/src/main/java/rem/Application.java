@@ -5,7 +5,7 @@ import rem.bruteforce.ThreadSharedObject;
 
 public class Application {
     public static void main(String[] args) throws InterruptedException {
-        ThreadSharedObject sharedObject = new ThreadSharedObject(3, 2);
+        ThreadSharedObject sharedObject = new ThreadSharedObject(10, 2);
         Thread thread1 = new Thread(new CountThread(sharedObject));
         thread1.setName("1");
         Thread thread2 = new Thread(new CountThread(sharedObject));
