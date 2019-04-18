@@ -3,9 +3,9 @@ package rem.bruteforce;
 public class ThreadSharedObject {
     private final int limit;
     private final int nThreads;
-    private static volatile int currentValue = 1;
-    private static volatile int addend = 1;
-    private static volatile int requestsNumber = 1;
+    private int currentValue = 1;
+    private int addend = 1;
+    private int requestsNumber = 1;
 
     public ThreadSharedObject(int nThreads) {
         this(-1, nThreads);

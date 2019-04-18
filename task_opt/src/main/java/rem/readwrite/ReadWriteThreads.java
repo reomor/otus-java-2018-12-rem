@@ -4,8 +4,8 @@ import java.util.concurrent.Semaphore;
 
 public class ReadWriteThreads {
     private final int limit;
+    private int addend = 1;
     private volatile int current = 1;
-    private volatile int addend = 1;
     private volatile boolean available = true;
     private static final Semaphore CONSOLE = new Semaphore(1, true);
 
@@ -22,7 +22,7 @@ public class ReadWriteThreads {
             e.printStackTrace();
         }
         available = false;
-        notify();
+        notifyAll();
         return current;
     }
 
@@ -40,19 +40,19 @@ public class ReadWriteThreads {
         int tmp = current;
         current += addend;
         available = true;
-        notify();
+        notifyAll();
         return tmp;
     }
 
     public void start() throws InterruptedException {
         Thread writeThread = new Thread(new WriteThread());
         writeThread.setName("wTh");
-        Thread readThread = new Thread(new ReadThread());
-        readThread.setName("rTh");
+        Thread readThread1 = new Thread(new ReadThread());
+        readThread1.setName("rTh1");
         writeThread.start();
-        readThread.start();
+        readThread1.start();
         writeThread.join();
-        readThread.join();
+        readThread1.join();
     }
 
     class WriteThread implements Runnable {
