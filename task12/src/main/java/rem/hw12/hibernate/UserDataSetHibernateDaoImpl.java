@@ -26,7 +26,8 @@ public class UserDataSetHibernateDaoImpl implements DataSetDao<UserDataSet> {
     @Override
     public UserDataSet load(long id) {
         return Executor.query(sessionFactory, session ->
-                session.load(getType(), id));
+                //get instead of load, because get return null if not exist, load throws exception
+                session.get(getType(), id));
     }
 
     @Override
