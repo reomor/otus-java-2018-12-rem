@@ -30,7 +30,7 @@ public class WebServer {
         contextHandler.addServlet(
                 new ServletHolder(new AdminServlet(new TemplateProcessor(), dbService)),
                 "/admin");
-        contextHandler.addFilter(new FilterHolder(new AuthorizationFilter()), "/admin", null);
+        contextHandler.addFilter(new FilterHolder(new AuthorizationFilter()), AdminServlet.pathSpec, null);
         contextHandler.addServlet(new ServletHolder(new LoginServlet()), "/login");
 
         Server server = new Server(PORT);
