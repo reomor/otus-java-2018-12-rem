@@ -59,3 +59,7 @@
 #### Task 12
 #### [Web-server](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task12)
 Встроить веб-сервер в приложение из ДЗ-11
+
+#### Task 13
+#### [Multithread sort](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task13)
+Разработать приложение, которое сортирует массив чисел в нескольких потоках
