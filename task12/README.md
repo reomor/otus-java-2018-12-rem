@@ -6,3 +6,7 @@
   * добавить пользователя
   * получить имя пользователя по id
   * получить количество пользователей в базе
+  
+ Материалы: <br>
+ [Freemaker](https://freemarker.apache.org/docs/pgui_quickstart_all.html) <br>
+ [Freemaker examples](https://www.vogella.com/tutorials/FreeMarker/article.html)

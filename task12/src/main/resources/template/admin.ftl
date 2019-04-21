@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin page</title>
+    <link href="/css/style.css" rel="stylesheet"/>
 </head>
 <body>
 <p>You are: ${username}</p>
+<form action="/admin" method="GET">
+    <ul class="form-style-1">
+        <li><label>User id<span class="required">*</span></label><input type="text" name="id" class="field-long" placeholder="1" required></li>
+        <input type="submit" value="Get user">
+    </ul>
+</form>
+<p>User by id:</p>
 <#if user??>
     <p>User: ${user.name}</p>
     <p>User age: ${user.age}</p>
@@ -17,25 +25,18 @@
         </#list>
     </ul>
 </#if>
-<form action="/admin" method="GET">
-    User id: <input type="text" name="id"/>
-    <input type="submit" value="Submit">
-</form>
 <#if numberOfUsers??>
     <p>Number of users in DB: ${numberOfUsers}</p>
 </#if>
 <form action="/admin" method="POST">
-    User name: <input type="text" name="name"/>
-    <br>
-    Age: <input type="text" name="age"/>
-    <br>
-    Address: <input type="text" name="street"/>
-    <br>
-    Phone 1:<input type="text" name="phones" >
-    <br>
-    Phone 2:<input type="text" name="phones"/>
-    <br>
-    <input type="submit" value="Submit">
+    <ul class="form-style-1">
+        <li><label>User name<span class="required">*</span></label><input type="text" name="name" class="field-long" placeholder="Name" required></li>
+        <li><label>Age<span class="required">*</span></label><input type="text" name="age" class="field-long" placeholder="18" required></li>
+        <li><label>Street<span class="required">*</span></label><input type="text" name="street" class="field-long" placeholder="Lenina, 1" required></li>
+        <li><label>Phone 1<span class="required">*</span></label><input type="text" name="phones" class="field-long" placeholder="123" required></li>
+        <li><label>Phone 2</label><input type="text" name="phones" class="field-long" placeholder="123"></li>
+        <input type="submit" value="Submit">
+    </ul>
 </form>
 </body>
 </html>

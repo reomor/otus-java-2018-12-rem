@@ -8,7 +8,6 @@ import rem.hw12.web.TemplateProcessor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AdminServlet extends HttpServlet {
+public class AdminServlet extends AbstractServlet {
     public static String pathSpec = "/admin";
     private String ADMIN_TEMPLATE_PAGE = "admin.ftl";
     private final TemplateProcessor templateProcessor;
@@ -39,6 +38,8 @@ public class AdminServlet extends HttpServlet {
             }
         }
         model.put("username", username);
+        model.put("numberOfUsers", dbService.loadAll().size());
+
         String userId = request.getParameter("id");
         if (userId != null && !userId.isBlank()) {
             final UserDataSet userDataSet = dbService.load(Integer.parseInt(userId));
@@ -46,10 +47,8 @@ public class AdminServlet extends HttpServlet {
                 model.put("user", userDataSet);
             }
         }
-        model.put("numberOfUsers", dbService.loadAll().size());
-
         response.getWriter().println(templateProcessor.getTemplatePage(ADMIN_TEMPLATE_PAGE, model));
-        ServletUtil.setResponseStatusOK(response);
+        setResponseStatusOK(response);
     }
 
     @Override
@@ -65,11 +64,13 @@ public class AdminServlet extends HttpServlet {
         final UserDataSet userDataSet = new UserDataSet(username, age, new AddressDataSet(street));
         List<PhoneDataSet> phoneDataSetList = new ArrayList<>();
         for (String phone : phones) {
-            phoneDataSetList.add(new PhoneDataSet(phone));
+            if (!phone.isBlank()) {
+                phoneDataSetList.add(new PhoneDataSet(phone));
+            }
         }
         userDataSet.setPhones(phoneDataSetList);
         dbService.save(userDataSet);
-        ServletUtil.setResponseStatusOK(response);
+        setResponseStatusOK(response);
         response.sendRedirect(pathSpec);
     }
 }
