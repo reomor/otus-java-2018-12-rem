@@ -52,6 +52,14 @@
 #### [myORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task10)
 Разработать Executor и DAO для операций над наследниками класса DataSet
 
+#### Task 11
+#### [Hibernate ORM](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task11)
+Разработать Executor и DAO для операций над наследниками класса DataSet на Hibernate
+
+#### Task 12
+#### [Web-server](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task12)
+Встроить веб-сервер в приложение из ДЗ-11
+
 #### Task 13
-#### [Multithread sort](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task10)
+#### [Multithread sort](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task13)
 Разработать приложение, которое сортирует массив чисел в нескольких потоках
