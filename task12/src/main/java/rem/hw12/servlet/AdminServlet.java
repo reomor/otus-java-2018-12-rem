@@ -53,13 +53,32 @@ public class AdminServlet extends AbstractServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final UserDataSet userDataSet = getUserDataSetFromRequest(request);
+        if (userDataSet != null) {
+            dbService.save(userDataSet);
+            setResponseStatusOK(response);
+        } else {
+            setResponseStatusNotAcceptable(response);
+        }
+        response.sendRedirect(pathSpec);
+    }
+
+    private UserDataSet getUserDataSetFromRequest(HttpServletRequest request) {
         final String username = request.getParameter("name");
+        if (username == null || username.isBlank()) {
+            return null;
+        }
         final String ageString = request.getParameter("age");
         int age = 0;
         if (ageString != null && !ageString.isBlank()) {
             age = Integer.parseInt(ageString);
+        } else {
+            return null;
         }
         final String street = request.getParameter("street");
+        if (street == null || street.isBlank()) {
+            return null;
+        }
         final String[] phones = request.getParameterValues("phones");
         final UserDataSet userDataSet = new UserDataSet(username, age, new AddressDataSet(street));
         List<PhoneDataSet> phoneDataSetList = new ArrayList<>();
@@ -69,8 +88,6 @@ public class AdminServlet extends AbstractServlet {
             }
         }
         userDataSet.setPhones(phoneDataSetList);
-        dbService.save(userDataSet);
-        setResponseStatusOK(response);
-        response.sendRedirect(pathSpec);
+        return userDataSet;
     }
 }
