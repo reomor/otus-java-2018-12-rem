@@ -1,10 +1,10 @@
-package rem.hw14.messaging;
+package rem.hw14.messaging.core;
 
 public abstract class Message {
     private final Address from;
     private final Address to;
 
-    protected Message(Address from, Address to) {
+    public Message(Address from, Address to) {
         this.from = from;
         this.to = to;
     }
@@ -16,4 +16,6 @@ public abstract class Message {
     public Address getTo() {
         return to;
     }
+
+    public abstract void exec(Addressee addressee);
 }
