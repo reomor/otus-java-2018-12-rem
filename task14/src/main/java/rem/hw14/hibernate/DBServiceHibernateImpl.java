@@ -13,6 +13,8 @@ import rem.hw14.dbcommon.DBService;
 import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.PhoneDataSet;
 import rem.hw14.domain.UserDataSet;
+import rem.hw14.messaging.core.Address;
+import rem.hw14.messaging.core.MessageSystem;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -92,5 +94,20 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     @Override
     public Class getType() {
         return UserDataSet.class;
+    }
+
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public Address getAddress() {
+        return null;
+    }
+
+    @Override
+    public MessageSystem getMS() {
+        return null;
     }
 }
