@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Executor {
@@ -17,10 +18,10 @@ public class Executor {
         }
     }
 
-    public static void update(SessionFactory sessionFactory, SessionHandler function) {
+    public static void update(SessionFactory sessionFactory, Consumer<Session> sessionConsumer) {
         try(Session session = sessionFactory.openSession()) {
             final Transaction transaction = session.beginTransaction();
-            function.handle(session);
+            sessionConsumer.accept(session);
             transaction.commit();
         }
     }

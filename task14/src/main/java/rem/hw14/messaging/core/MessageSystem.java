@@ -22,15 +22,9 @@ public class MessageSystem {
     }
 
     public void registerAddressee(Addressee addressee) {
-        registerAddressee(addressee, null);
-    }
-
-    public void registerAddressee(Addressee addressee, String addressString) {
-        if (!addresseeMap.containsValue(addressee)) {
-            Address address = addressString == null || addressString.isBlank() ? new Address() : new Address(addressString);
-            addresseeMap.put(address, addressee);
-            messagesMap.put(address, new LinkedBlockingQueue<>());
-        }
+        final Address address = addressee.getAddress();
+        addresseeMap.put(address, addressee);
+        messagesMap.put(address, new LinkedBlockingQueue<>());
     }
 
     public void sendMessage(Message message) {

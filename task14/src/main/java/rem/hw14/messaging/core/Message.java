@@ -1,6 +1,9 @@
 package rem.hw14.messaging.core;
 
+import java.util.logging.Logger;
+
 public abstract class Message {
+    protected final static Logger logger = Logger.getLogger(Message.class.getName());
     private final Address from;
     private final Address to;
 

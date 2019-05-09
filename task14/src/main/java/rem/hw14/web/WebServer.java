@@ -11,7 +11,12 @@ import rem.hw14.dbcommon.DBService;
 import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.UserDataSet;
 import rem.hw14.filter.AuthorizationFilter;
+import rem.hw14.front.FrontService;
+import rem.hw14.front.FrontServiceImpl;
 import rem.hw14.hibernate.DBServiceHibernateImpl;
+import rem.hw14.messaging.MessageChannel;
+import rem.hw14.messaging.core.Address;
+import rem.hw14.messaging.core.MessageSystem;
 import rem.hw14.servlet.AdminServlet;
 import rem.hw14.servlet.LoginServlet;
 
@@ -20,8 +25,14 @@ public class WebServer {
     private final static String STATIC = "/static";
 
     public void start() throws Exception {
-        final DBService<UserDataSet> dbService = new DBServiceHibernateImpl();
+        MessageSystem messageSystem = new MessageSystem();
+        MessageChannel messageChannel = new MessageChannel(messageSystem);
+        final DBService<UserDataSet> dbService = new DBServiceHibernateImpl(messageChannel, new Address("DB"));
+        final FrontService frontService = new FrontServiceImpl(messageChannel, new Address("FRONT"));
+        messageSystem.start();
+
         dbService.save(new UserDataSet("First", 1, new AddressDataSet("Lenina, 1")));
+
         ResourceHandler resourceHandler = new ResourceHandler();
         Resource resource = Resource.newClassPathResource(STATIC);
         resourceHandler.setBaseResource(resource);
@@ -36,6 +47,9 @@ public class WebServer {
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, contextHandler));
         server.start();
+        frontService.handleRequest(1);
+        Thread.sleep(100_000);
+        messageSystem.dispose();
         server.join();
     }
 }

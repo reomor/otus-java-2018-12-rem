@@ -4,6 +4,9 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.UserDataSet;
+import rem.hw14.messaging.MessageChannel;
+import rem.hw14.messaging.core.Address;
+import rem.hw14.messaging.core.MessageSystem;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DBServiceHibernateImplTest extends AbstractDBServiceTest {
     @BeforeAll
     public static void beforeAll() {
-        dbService = new DBServiceHibernateImpl();
+        messageSystem = new MessageSystem();
+        messageChannel = new MessageChannel(messageSystem);
+        dbService = new DBServiceHibernateImpl(messageChannel, new Address("DB"));
     }
 
     @BeforeEach

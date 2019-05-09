@@ -10,8 +10,8 @@ public final class Address {
         id = String.valueOf(ID_GENERATOR.getAndIncrement());
     }
 
-    public Address(String id) {
-        this.id = id;
+    public Address(String prefix) {
+        this.id = prefix + ID_GENERATOR.getAndIncrement();
     }
 
     public String getId() {

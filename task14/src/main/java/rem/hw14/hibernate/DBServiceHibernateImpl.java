@@ -13,6 +13,7 @@ import rem.hw14.dbcommon.DBService;
 import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.PhoneDataSet;
 import rem.hw14.domain.UserDataSet;
+import rem.hw14.messaging.MessageChannel;
 import rem.hw14.messaging.core.Address;
 import rem.hw14.messaging.core.MessageSystem;
 
@@ -24,8 +25,15 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     final static String TRUNCATE_TABLES = "TRUNCATE SCHEMA PUBLIC RESTART IDENTITY AND COMMIT NO CHECK";
     private final SessionFactory sessionFactory;
     private final DataSetDao<UserDataSet> dataSetDao;
+    private final MessageChannel channel;
+    private final Address address;
 
-    public DBServiceHibernateImpl() {
+    public DBServiceHibernateImpl(MessageChannel channel, Address address) {
+        this.channel = channel;
+        this.address = address;
+        channel.setBackEnd(address);
+        channel.getMessageSystem().registerAddressee(this);
+
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UserDataSet.class);
         configuration.addAnnotatedClass(AddressDataSet.class);
@@ -97,17 +105,12 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
     public Address getAddress() {
-        return null;
+        return address;
     }
 
     @Override
     public MessageSystem getMS() {
-        return null;
+        return channel.getMessageSystem();
     }
 }
