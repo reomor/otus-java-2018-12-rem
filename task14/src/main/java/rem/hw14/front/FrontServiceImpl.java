@@ -7,6 +7,8 @@ import rem.hw14.messaging.core.Message;
 import rem.hw14.messaging.core.MessageSystem;
 import rem.hw14.messaging.messages.MessageGetUserByIdRequest;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,11 @@ public class FrontServiceImpl implements FrontService {
     @Override
     public <T extends UserDataSet> void addUserData(T userData) {
         userDataSetMap.put(userData.getId(), userData);
+    }
+
+    @Override
+    public Collection<UserDataSet> getUserDataSetCollection() {
+        return Collections.unmodifiableCollection(userDataSetMap.values());
     }
 
     @Override

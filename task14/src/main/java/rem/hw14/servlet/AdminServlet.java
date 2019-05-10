@@ -4,6 +4,7 @@ import rem.hw14.dbcommon.DBService;
 import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.PhoneDataSet;
 import rem.hw14.domain.UserDataSet;
+import rem.hw14.front.FrontService;
 import rem.hw14.web.TemplateProcessor;
 
 import javax.servlet.ServletException;
@@ -21,10 +22,12 @@ public class AdminServlet extends AbstractServlet {
     private String ADMIN_TEMPLATE_PAGE = "admin.ftl";
     private final TemplateProcessor templateProcessor;
     private final DBService<UserDataSet> dbService;
+    private final FrontService frontService;
 
-    public AdminServlet(TemplateProcessor templateProcessor, DBService<UserDataSet> dbService) {
+    public AdminServlet(TemplateProcessor templateProcessor, DBService<UserDataSet> dbService, FrontService frontService) {
         this.templateProcessor = templateProcessor;
         this.dbService = dbService;
+        this.frontService = frontService;
     }
 
     @Override
@@ -39,13 +42,16 @@ public class AdminServlet extends AbstractServlet {
         }
         model.put("username", username);
         model.put("numberOfUsers", dbService.loadAll().size());
+        model.put("cachedUsers", frontService.getUserDataSetCollection());
 
         String userId = request.getParameter("id");
         if (userId != null && !userId.isBlank()) {
-            final UserDataSet userDataSet = dbService.load(Integer.parseInt(userId));
+            final int parsedId = Integer.parseInt(userId);
+            final UserDataSet userDataSet = dbService.load(parsedId);
             if (userDataSet != null) {
                 model.put("user", userDataSet);
             }
+            frontService.handleRequest(parsedId);
         }
         response.getWriter().println(templateProcessor.getTemplatePage(ADMIN_TEMPLATE_PAGE, model));
         setResponseStatusOK(response);

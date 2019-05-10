@@ -39,7 +39,7 @@ public class WebServer {
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(
-                new ServletHolder(new AdminServlet(new TemplateProcessor(), dbService)),
+                new ServletHolder(new AdminServlet(new TemplateProcessor(), dbService, frontService)),
                 "/admin");
         contextHandler.addFilter(new FilterHolder(new AuthorizationFilter()), AdminServlet.pathSpec, null);
         contextHandler.addServlet(new ServletHolder(new LoginServlet()), "/login");
@@ -47,9 +47,6 @@ public class WebServer {
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, contextHandler));
         server.start();
-        frontService.handleRequest(1);
-        Thread.sleep(100_000);
-        messageSystem.dispose();
         server.join();
     }
 }
