@@ -8,31 +8,24 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import rem.hw14.dbcommon.DBService;
-import rem.hw14.domain.AddressDataSet;
 import rem.hw14.domain.UserDataSet;
 import rem.hw14.filter.AuthorizationFilter;
 import rem.hw14.front.FrontService;
-import rem.hw14.front.FrontServiceImpl;
-import rem.hw14.hibernate.DBServiceHibernateImpl;
-import rem.hw14.messaging.MessageChannel;
-import rem.hw14.messaging.core.Address;
-import rem.hw14.messaging.core.MessageSystem;
 import rem.hw14.servlet.AdminServlet;
 import rem.hw14.servlet.LoginServlet;
 
 public class WebServer {
     private final static int PORT = 8080;
     private final static String STATIC = "/static";
+    final DBService<UserDataSet> dbService;
+    final FrontService frontService;
+
+    public WebServer(DBService<UserDataSet> dbService, FrontService frontService) {
+        this.dbService = dbService;
+        this.frontService = frontService;
+    }
 
     public void start() throws Exception {
-        MessageSystem messageSystem = new MessageSystem();
-        MessageChannel messageChannel = new MessageChannel(messageSystem);
-        final DBService<UserDataSet> dbService = new DBServiceHibernateImpl(messageChannel, new Address("DB"));
-        final FrontService frontService = new FrontServiceImpl(messageChannel, new Address("FRONT"));
-        messageSystem.start();
-
-        dbService.save(new UserDataSet("First", 1, new AddressDataSet("Lenina, 1")));
-
         ResourceHandler resourceHandler = new ResourceHandler();
         Resource resource = Resource.newClassPathResource(STATIC);
         resourceHandler.setBaseResource(resource);
