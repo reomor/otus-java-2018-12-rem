@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin page</title>
-    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="resources/css/style.css" rel="stylesheet"/>
 </head>
 <body>
 <p>You are: ${username}</p>
-<form action="/admin" method="GET">
+<form action="admin" method="GET">
     <ul class="form-style-1">
         <li><label>User id<span class="required">*</span></label><input type="text" name="id" class="field-long" placeholder="1" required></li>
         <input type="submit" value="Get user">
@@ -28,7 +28,7 @@
 <#if numberOfUsers??>
     <p>Number of users in DB: ${numberOfUsers}</p>
 </#if>
-<form action="/admin" method="POST">
+<form action="admin" method="POST">
     <ul class="form-style-1">
         <li><label>User name<span class="required">*</span></label><input type="text" name="name" class="field-long" placeholder="Name" required></li>
         <li><label>Age<span class="required">*</span></label><input type="text" name="age" class="field-long" placeholder="18" required></li>

@@ -1,0 +1,31 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="messageSystem" class="rem.hw15.messaging.core.MessageSystem"/>
+
+    <bean id="messageChannel" class="rem.hw15.messaging.MessageChannel">
+        <constructor-arg ref="messageSystem"/>
+    </bean>
+
+    <bean id="dbServiceAddress" class="rem.hw15.messaging.core.Address">
+        <constructor-arg value="DB"/>
+    </bean>
+
+    <bean id="frontServiceAddress" class="rem.hw15.messaging.core.Address">
+        <constructor-arg value="FRONT"/>
+    </bean>
+
+    <bean id="dbService" class="rem.hw15.hibernate.DBServiceHibernateImpl">
+        <constructor-arg name="channel" ref="messageChannel"/>
+        <constructor-arg name="address" ref="frontServiceAddress"/>
+    </bean>
+
+    <bean id="frontService" class="rem.hw15.front.FrontServiceImpl">
+        <constructor-arg name="channel" ref="messageChannel"/>
+        <constructor-arg name="address" ref="frontServiceAddress"/>
+    </bean>
+
+    <bean id="templateProcessor" class="rem.hw15.web.TemplateProcessor"/>
+</beans>

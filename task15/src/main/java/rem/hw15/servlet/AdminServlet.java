@@ -1,5 +1,6 @@
 package rem.hw15.servlet;
 
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import rem.hw15.dbcommon.DBService;
 import rem.hw15.domain.AddressDataSet;
 import rem.hw15.domain.PhoneDataSet;
@@ -18,16 +19,18 @@ import java.util.List;
 import java.util.Map;
 
 public class AdminServlet extends AbstractServlet {
-    public static String pathSpec = "/admin";
+    public static String pathSpec = "admin";
     private String ADMIN_TEMPLATE_PAGE = "admin.ftl";
-    private final TemplateProcessor templateProcessor;
-    private final DBService<UserDataSet> dbService;
-    private final FrontService frontService;
+    private TemplateProcessor templateProcessor;
+    private DBService<UserDataSet> dbService;
+    private FrontService frontService;
 
-    public AdminServlet(TemplateProcessor templateProcessor, DBService<UserDataSet> dbService, FrontService frontService) {
-        this.templateProcessor = templateProcessor;
-        this.dbService = dbService;
-        this.frontService = frontService;
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        templateProcessor = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("templateProcessor", TemplateProcessor.class);
+        dbService = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("dbService", DBService.class);
+        frontService = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("frontService", FrontService.class);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class AdminServlet extends AbstractServlet {
         model.put("cachedUsers", frontService.getUserDataSetCollection());
 
         String userId = request.getParameter("id");
-        if (userId != null && !userId.isBlank()) {
+        if (userId != null && !userId.isEmpty()) {
             final int parsedId = Integer.parseInt(userId);
             final UserDataSet userDataSet = dbService.load(parsedId);
             if (userDataSet != null) {
@@ -71,25 +74,25 @@ public class AdminServlet extends AbstractServlet {
 
     private UserDataSet getUserDataSetFromRequest(HttpServletRequest request) {
         final String username = request.getParameter("name");
-        if (username == null || username.isBlank()) {
+        if (username == null || username.isEmpty()) {
             return null;
         }
         final String ageString = request.getParameter("age");
         int age = 0;
-        if (ageString != null && !ageString.isBlank()) {
+        if (ageString != null && !ageString.isEmpty()) {
             age = Integer.parseInt(ageString);
         } else {
             return null;
         }
         final String street = request.getParameter("street");
-        if (street == null || street.isBlank()) {
+        if (street == null || street.isEmpty()) {
             return null;
         }
         final String[] phones = request.getParameterValues("phones");
         final UserDataSet userDataSet = new UserDataSet(username, age, new AddressDataSet(street));
         List<PhoneDataSet> phoneDataSetList = new ArrayList<>();
         for (String phone : phones) {
-            if (!phone.isBlank()) {
+            if (!phone.isEmpty()) {
                 phoneDataSetList.add(new PhoneDataSet(phone));
             }
         }

@@ -74,7 +74,7 @@ public class UserDataSet extends DataSet {
     }
 
     public void setPhones(List<PhoneDataSet> phones) {
-        this.phones = phones.isEmpty() ? Collections.EMPTY_LIST : List.copyOf(phones);
+        this.phones = phones.isEmpty() ? Collections.EMPTY_LIST : Collections.unmodifiableList(phones);
     }
 
     @Override
