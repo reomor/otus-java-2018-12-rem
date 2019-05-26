@@ -19,7 +19,7 @@
 
     <bean id="dbService" class="rem.hw15.hibernate.DBServiceHibernateImpl">
         <constructor-arg name="channel" ref="messageChannel"/>
-        <constructor-arg name="address" ref="frontServiceAddress"/>
+        <constructor-arg name="address" ref="dbServiceAddress"/>
     </bean>
 
     <bean id="frontService" class="rem.hw15.front.FrontServiceImpl">

@@ -25,31 +25,27 @@ public class MessageSystem {
         final Address address = addressee.getAddress();
         addresseeMap.put(address, addressee);
         messagesMap.put(address, new LinkedBlockingQueue<>());
+
+        String name = "MS-worker-" + address.getId();
+        Thread thread = new Thread(() -> {
+            final LinkedBlockingQueue<Message> queue = messagesMap.get(address);
+            while (true) {
+                try {
+                    final Message message = queue.take();
+                    message.exec(addressee);
+                } catch (InterruptedException e) {
+                    logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
+                    return;
+                }
+            }
+        });
+        thread.setName(name);
+        workers.add(thread);
+        thread.start();
     }
 
     public void sendMessage(Message message) {
         messagesMap.get(message.getTo()).add(message);
-    }
-
-    public void start() {
-        for (Map.Entry<Address, Addressee> entry : addresseeMap.entrySet()) {
-            String name = "MS-worker-" + entry.getKey().getId();
-            Thread thread = new Thread(() -> {
-                final LinkedBlockingQueue<Message> queue = messagesMap.get(entry.getKey());
-                while (true) {
-                    try {
-                        final Message message = queue.take();
-                        message.exec(entry.getValue());
-                    } catch (InterruptedException e) {
-                        logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
-                        return;
-                    }
-                }
-            });
-            thread.setName(name);
-            workers.add(thread);
-            thread.start();
-        }
     }
 
     public void dispose() {
