@@ -1,6 +1,7 @@
 package rem.hw15.servlet;
 
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import rem.hw15.dbcommon.DBService;
 import rem.hw15.domain.AddressDataSet;
 import rem.hw15.domain.PhoneDataSet;
@@ -28,9 +29,22 @@ public class AdminServlet extends AbstractServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        templateProcessor = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("templateProcessor", TemplateProcessor.class);
-        dbService = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("dbService", DBService.class);
-        frontService = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean("frontService", FrontService.class);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
+
+    @Autowired
+    public void setTemplateProcessor(TemplateProcessor templateProcessor) {
+        this.templateProcessor = templateProcessor;
+    }
+
+    @Autowired
+    public void setDbService(DBService<UserDataSet> dbService) {
+        this.dbService = dbService;
+    }
+
+    @Autowired
+    public void setFrontService(FrontService frontService) {
+        this.frontService = frontService;
     }
 
     @Override

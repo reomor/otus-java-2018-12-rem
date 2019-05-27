@@ -20,7 +20,9 @@ public class MessageGetUserByIdRequest extends MessageToDB {
     public <T extends DataSet> void exec(DBService<T> dbService) {
         logger.log(Level.INFO, "Get message request (id=" + id + ")");
         final T object = dbService.load(id);
-        if (object instanceof UserDataSet) {
+        if (object == null) {
+            logger.log(Level.INFO, "Object (id=" + id + ") from DB is null");
+        } else if (object instanceof UserDataSet) {
             dbService.getMS().sendMessage(new MessageGetUserByIdResponse<>(getTo(), getFrom(), (UserDataSet) object));
         } else {
             logger.log(Level.SEVERE, "Object type from DB(" + object.getClass() + ") is not supported");
