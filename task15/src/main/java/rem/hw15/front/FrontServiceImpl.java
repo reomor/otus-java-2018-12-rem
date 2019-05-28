@@ -6,6 +6,7 @@ import rem.hw15.messaging.core.Address;
 import rem.hw15.messaging.core.Message;
 import rem.hw15.messaging.core.MessageSystem;
 import rem.hw15.messaging.messages.MessageGetUserByIdRequest;
+import rem.hw15.messaging.messages.MessageSaveUserRequest;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,14 +26,29 @@ public class FrontServiceImpl implements FrontService {
     }
 
     @Override
-    public void handleRequest(long id) {
+    public void requestById(long id) {
         Message message = new MessageGetUserByIdRequest(getAddress(), channel.getBackEnd(), id);
+        channel.getMessageSystem().sendMessage(message);
+    }
+
+    @Override
+    public <T extends UserDataSet> void requestToSave(T userData) {
+        Message message = new MessageSaveUserRequest(getAddress(), channel.getBackEnd(), userData);
         channel.getMessageSystem().sendMessage(message);
     }
 
     @Override
     public <T extends UserDataSet> void addUserData(T userData) {
         userDataSetMap.put(userData.getId(), userData);
+    }
+
+    @Override
+    public <T extends UserDataSet> T getUserData(long id) {
+        if (userDataSetMap.containsKey(id)) {
+            return (T) userDataSetMap.get(id);
+        }
+        requestById(id);
+        return null;
     }
 
     @Override

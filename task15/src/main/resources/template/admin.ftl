@@ -25,9 +25,6 @@
         </#list>
     </ul>
 </#if>
-<#if numberOfUsers??>
-    <p>Number of users in DB: ${numberOfUsers}</p>
-</#if>
 <form action="admin" method="POST">
     <ul class="form-style-1">
         <li><label>User name<span class="required">*</span></label><input type="text" name="name" class="field-long" placeholder="Name" required></li>
@@ -40,8 +37,7 @@
 </form>
 <#if cachedUsers??>
     <#list cachedUsers as user>
-        <li>${user.name}</li>
-        <li>${user.age}</li>
+        <li>Name: ${user.name}, age: ${user.age}</li>
     </#list>
 </#if>
 </body>

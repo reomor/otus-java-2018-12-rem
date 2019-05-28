@@ -6,9 +6,13 @@ import rem.hw15.messaging.core.Addressee;
 import java.util.Collection;
 
 public interface FrontService extends Addressee {
-    void handleRequest(long id);
+    void requestById(long id);
+
+    <T extends UserDataSet> void requestToSave(T userData);
 
     <T extends UserDataSet> void addUserData(T userData);
+
+    <T extends UserDataSet> T getUserData(long id);
 
     Collection<UserDataSet> getUserDataSetCollection();
 }

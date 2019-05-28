@@ -17,7 +17,8 @@ public abstract class MessageToFront extends Message {
         if (addressee instanceof FrontService) {
             exec((FrontService) addressee);
         } else {
-            logger.log(Level.SEVERE, "Addressee type (type=" + addressee.getClass() + ", address=" + addressee.getAddress() + ") don't correspond message type");
+            logger.log(Level.SEVERE, "Addressee type (type=" + addressee.getClass() + ", " +
+                    "address=" + addressee.getAddress() + ") don't correspond message type");
         }
     }
 

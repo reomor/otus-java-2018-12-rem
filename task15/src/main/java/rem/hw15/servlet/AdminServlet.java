@@ -2,7 +2,6 @@ package rem.hw15.servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import rem.hw15.dbcommon.DBService;
 import rem.hw15.domain.AddressDataSet;
 import rem.hw15.domain.PhoneDataSet;
 import rem.hw15.domain.UserDataSet;
@@ -23,7 +22,6 @@ public class AdminServlet extends AbstractServlet {
     public static String pathSpec = "admin";
     private String ADMIN_TEMPLATE_PAGE = "admin.ftl";
     private TemplateProcessor templateProcessor;
-    private DBService<UserDataSet> dbService;
     private FrontService frontService;
 
     @Override
@@ -38,17 +36,12 @@ public class AdminServlet extends AbstractServlet {
     }
 
     @Autowired
-    public void setDbService(DBService<UserDataSet> dbService) {
-        this.dbService = dbService;
-    }
-
-    @Autowired
     public void setFrontService(FrontService frontService) {
         this.frontService = frontService;
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> model = new HashMap<>();
         String username = "N/A";
         for (Cookie cookie : request.getCookies()) {
@@ -58,27 +51,26 @@ public class AdminServlet extends AbstractServlet {
             }
         }
         model.put("username", username);
-        model.put("numberOfUsers", dbService.loadAll().size());
         model.put("cachedUsers", frontService.getUserDataSetCollection());
 
         String userId = request.getParameter("id");
         if (userId != null && !userId.isEmpty()) {
             final int parsedId = Integer.parseInt(userId);
-            final UserDataSet userDataSet = dbService.load(parsedId);
+            final UserDataSet userDataSet = frontService.getUserData(parsedId);
             if (userDataSet != null) {
                 model.put("user", userDataSet);
             }
-            frontService.handleRequest(parsedId);
+            frontService.requestById(parsedId);
         }
         response.getWriter().println(templateProcessor.getTemplatePage(ADMIN_TEMPLATE_PAGE, model));
         setResponseStatusOK(response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final UserDataSet userDataSet = getUserDataSetFromRequest(request);
         if (userDataSet != null) {
-            dbService.save(userDataSet);
+            frontService.requestToSave(userDataSet);
             setResponseStatusOK(response);
         } else {
             setResponseStatusNotAcceptable(response);
