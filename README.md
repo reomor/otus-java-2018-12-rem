@@ -69,5 +69,5 @@
 Встроить систему обмена сообщениями в веб-сервер из ДЗ-12
 
 #### Task 15
-#### [WAR](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task14)
+#### [WAR](https://github.com/reomor/otus-java-2018-12-rem/tree/dev/task15)
 Собрать war для приложения из ДЗ-14 с inject бинов
