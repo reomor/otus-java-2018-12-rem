@@ -1,9 +1,11 @@
 package rem.hw16.frontend;
 
-import rem.hw16.messageServer.client.SocketClient;
-import rem.hw16.messageServer.client.SocketClientImpl;
-import rem.hw16.messageServer.core.Address;
-import rem.hw16.messageServer.message.*;
+import rem.hw16.messageserver.client.MessageServerClient;
+import rem.hw16.messageserver.client.MessageServerClientImpl;
+import rem.hw16.messageserver.client.SocketClient;
+import rem.hw16.messageserver.client.SocketClientImpl;
+import rem.hw16.messageserver.core.Address;
+import rem.hw16.messageserver.message.*;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -23,30 +25,11 @@ public class FrontendMain {
 
     public void start() throws IOException {
         SocketClient socketClient = new SocketClientImpl(HOST, PORT);
+        MessageServerClient messageServerClient = new MessageServerClientImpl(socketClient);
         // wait for self addressFrom
-        socketClient.send(new MessageRegisterRequest("FRONT"));
-        try {
-            final MessageRegisterResponse message = (MessageRegisterResponse) socketClient.take();
-            addressFrom = message.getAddress();
-            logger.log(Level.INFO, "Got addressFrom from server: " + addressFrom);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        addressFrom = messageServerClient.register("FRONT");
         // wait for DB addressTo
-        try {
-            MessageCompanionResponse message;
-            do {
-                socketClient.send(new MessageCompanionRequest("DB"));
-                message = (MessageCompanionResponse) socketClient.take();
-                if (message.getAddress() != null) {
-                    addressTo = message.getAddress();
-                }
-                Thread.sleep(100);
-            } while (message.getAddress() == null);
-            logger.log(Level.INFO, "Got addressTo from server: " + addressTo);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        addressTo = messageServerClient.getCompanion("DB");
         //
         socketClient.send(new TestMessage(addressFrom, addressTo));
         try {
