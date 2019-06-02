@@ -1,6 +1,6 @@
-package rem.hw16.messageServer;
+package rem.hw16.messageserver;
 
-import rem.hw16.messageServer.server.SocketServer;
+import rem.hw16.messageserver.server.SocketServer;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;

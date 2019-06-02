@@ -1,4 +1,4 @@
-package rem.hw16.messageServer.core;
+package rem.hw16.messageserver.core;
 
 public abstract class AddressedMessage extends Message {
     private final Address from;

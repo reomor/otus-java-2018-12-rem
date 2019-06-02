@@ -1,6 +1,6 @@
-package rem.hw16.messageServer.message;
+package rem.hw16.messageserver.message;
 
-import rem.hw16.messageServer.core.Message;
+import rem.hw16.messageserver.core.Message;
 
 public class MessageCompanionRequest extends Message {
     private final String prefix;

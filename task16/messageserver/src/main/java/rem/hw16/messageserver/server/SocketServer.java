@@ -1,13 +1,13 @@
-package rem.hw16.messageServer.server;
+package rem.hw16.messageserver.server;
 
-import rem.hw16.messageServer.client.SocketClient;
-import rem.hw16.messageServer.client.SocketClientImpl;
-import rem.hw16.messageServer.core.Address;
-import rem.hw16.messageServer.core.Message;
-import rem.hw16.messageServer.message.MessageCompanionRequest;
-import rem.hw16.messageServer.message.MessageCompanionResponse;
-import rem.hw16.messageServer.message.MessageRegisterRequest;
-import rem.hw16.messageServer.message.MessageRegisterResponse;
+import rem.hw16.messageserver.client.SocketClient;
+import rem.hw16.messageserver.client.SocketClientImpl;
+import rem.hw16.messageserver.core.Address;
+import rem.hw16.messageserver.core.Message;
+import rem.hw16.messageserver.message.MessageCompanionRequest;
+import rem.hw16.messageserver.message.MessageCompanionResponse;
+import rem.hw16.messageserver.message.MessageRegisterRequest;
+import rem.hw16.messageserver.message.MessageRegisterResponse;
 
 import java.io.IOException;
 import java.net.ServerSocket;

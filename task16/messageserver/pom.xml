@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>rem.hw16.messageServer.ServerMain</mainClass>
+                            <mainClass>rem.hw16.messageserver.ServerMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

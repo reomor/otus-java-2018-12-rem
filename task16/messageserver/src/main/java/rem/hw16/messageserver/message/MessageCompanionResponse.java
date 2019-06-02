@@ -1,7 +1,7 @@
-package rem.hw16.messageServer.message;
+package rem.hw16.messageserver.message;
 
-import rem.hw16.messageServer.core.Address;
-import rem.hw16.messageServer.core.Message;
+import rem.hw16.messageserver.core.Address;
+import rem.hw16.messageserver.core.Message;
 
 public class MessageCompanionResponse extends Message {
     private final Address address;

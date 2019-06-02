@@ -1,6 +1,4 @@
-package rem.hw16.messageServer.server;
-
-import java.io.IOException;
+package rem.hw16.messageserver.server;
 
 public interface SocketServerMBean {
     boolean getRunning();

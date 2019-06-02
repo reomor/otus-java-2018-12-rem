@@ -1,6 +1,6 @@
-package rem.hw16.messageServer.client;
+package rem.hw16.messageserver.client;
 
-import rem.hw16.messageServer.core.Message;
+import rem.hw16.messageserver.core.Message;
 
 import java.io.*;
 import java.net.Socket;

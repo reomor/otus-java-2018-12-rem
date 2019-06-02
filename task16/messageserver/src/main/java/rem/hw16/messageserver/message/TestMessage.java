@@ -1,7 +1,7 @@
-package rem.hw16.messageServer.message;
+package rem.hw16.messageserver.message;
 
-import rem.hw16.messageServer.core.Address;
-import rem.hw16.messageServer.core.AddressedMessage;
+import rem.hw16.messageserver.core.Address;
+import rem.hw16.messageserver.core.AddressedMessage;
 
 public class TestMessage extends AddressedMessage {
     private final String payload = "Test message";
