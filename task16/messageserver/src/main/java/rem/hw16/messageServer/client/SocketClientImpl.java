@@ -62,7 +62,7 @@ public class SocketClientImpl implements SocketClient {
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
             while (socket.isConnected()) {
                 final Message message = (Message) ois.readObject();
-                System.out.println(message.getClass());
+                input.add(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

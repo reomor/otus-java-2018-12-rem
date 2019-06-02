@@ -13,7 +13,7 @@ public class ServerMain {
     public void start() throws Exception {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         ObjectName objectName = new ObjectName("rem.hw16.messageServer:type=Server");
-        SocketServer socketServer = new SocketServer(clientList);
+        SocketServer socketServer = new SocketServer();
         mBeanServer.registerMBean(socketServer, objectName);
 
         socketServer.start();
