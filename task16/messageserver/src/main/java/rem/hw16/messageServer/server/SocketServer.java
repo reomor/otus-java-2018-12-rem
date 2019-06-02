@@ -4,15 +4,16 @@ import rem.hw16.messageServer.client.SocketClient;
 import rem.hw16.messageServer.client.SocketClientImpl;
 import rem.hw16.messageServer.core.Address;
 import rem.hw16.messageServer.core.Message;
+import rem.hw16.messageServer.message.MessageCompanionRequest;
+import rem.hw16.messageServer.message.MessageCompanionResponse;
 import rem.hw16.messageServer.message.MessageRegisterRequest;
 import rem.hw16.messageServer.message.MessageRegisterResponse;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,11 +27,13 @@ public class SocketServer implements SocketServerMBean {
 
     private final ExecutorService executorService;
     private final List<SocketClient> clientList;
-    private final Map<Address, SocketClient> addressMap;
+    private final Map<Address, SocketClient> addressSocketClientMap;
+    private final Map<String, Deque<Address>> addressMap;
 
     public SocketServer() {
         this.executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         this.clientList = new CopyOnWriteArrayList<>();
+        this.addressSocketClientMap = new HashMap<>();
         this.addressMap = new HashMap<>();
     }
 
@@ -57,8 +60,19 @@ public class SocketServer implements SocketServerMBean {
                     MessageRegisterRequest request = (MessageRegisterRequest) message;
                     logger.log(Level.INFO, "Got register request: " + request);
                     final Address address = new Address(request.getPrefix());
-                    addressMap.put(address, socketClient);
+                    //
+                    addressMap.putIfAbsent(request.getPrefix(), new ConcurrentLinkedDeque<>());
+                    addressMap.get(request.getPrefix()).add(address);
+                    addressSocketClientMap.put(address, socketClient);
                     socketClient.send(new MessageRegisterResponse(address));
+                    continue;
+                } else if (message instanceof MessageCompanionRequest) {
+                    final MessageCompanionRequest request = (MessageCompanionRequest) message;
+                    if (addressMap.containsKey(request.getPrefix())) {
+                        socketClient.send(new MessageCompanionResponse(addressMap.get(request.getPrefix()).poll()));
+                    } else {
+                        socketClient.send(new MessageCompanionResponse(null));
+                    }
                 }
                 //else
                 //TODO resend message to addressTo
