@@ -3,6 +3,7 @@ package rem.hw16.messageserver.server;
 import rem.hw16.messageserver.client.SocketClient;
 import rem.hw16.messageserver.client.SocketClientImpl;
 import rem.hw16.messageserver.core.Address;
+import rem.hw16.messageserver.core.AddressedMessage;
 import rem.hw16.messageserver.core.Message;
 import rem.hw16.messageserver.message.MessageCompanionRequest;
 import rem.hw16.messageserver.message.MessageCompanionResponse;
@@ -66,17 +67,24 @@ public class SocketServer implements SocketServerMBean {
                     addressSocketClientMap.put(address, socketClient);
                     socketClient.send(new MessageRegisterResponse(address));
                     continue;
-                } else if (message instanceof MessageCompanionRequest) {
+                } else if (message instanceof MessageCompanionRequest) { //
                     final MessageCompanionRequest request = (MessageCompanionRequest) message;
                     if (addressMap.containsKey(request.getPrefix())) {
                         socketClient.send(new MessageCompanionResponse(addressMap.get(request.getPrefix()).poll()));
                     } else {
                         socketClient.send(new MessageCompanionResponse(null));
                     }
+                } else if (message instanceof AddressedMessage) {
+                    AddressedMessage addressedMessage = (AddressedMessage) message;
+                    logger.log(Level.INFO, "Got message to redirect: " + addressedMessage);
+                    if (addressSocketClientMap.containsKey(addressedMessage.getTo())) {
+                        addressSocketClientMap.get(addressedMessage.getTo()).send(message);
+                    } else {
+                        logger.log(Level.WARNING, "Addressee To(" + addressedMessage.getTo() + ") is not known");
+                    }
+                } else {
+                    logger.log(Level.WARNING, "Message type is incorrect(" + message.getClass() + ")");
                 }
-                //else
-                //TODO resend message to addressTo
-                logger.log(Level.INFO, "Message: " + message);
             }
             try {
                 Thread.sleep(50);

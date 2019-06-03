@@ -1,5 +1,9 @@
 package rem.hw16.frontend;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import rem.hw16.dbserver.domain.AddressDataSet;
+import rem.hw16.dbserver.domain.UserDataSet;
 import rem.hw16.messageserver.client.MessageServerClient;
 import rem.hw16.messageserver.client.MessageServerClientImpl;
 import rem.hw16.messageserver.client.SocketClient;
@@ -15,6 +19,7 @@ public class FrontendMain {
     private static final Logger logger = Logger.getLogger(FrontendMain.class.getName());
     private static final String HOST = "localhost";
     private static final int PORT = 6000;
+    private static final Gson gson = new GsonBuilder().create();
 
     private Address addressFrom;
     private Address addressTo;
@@ -31,7 +36,9 @@ public class FrontendMain {
         // wait for DB addressTo
         addressTo = messageServerClient.getCompanion("DB");
         //
-        socketClient.send(new TestMessage(addressFrom, addressTo));
+        //socketClient.send(new TestMessage(addressFrom, addressTo));
+        final UserDataSet userDataSet = new UserDataSet("First", 1, new AddressDataSet("Lenina, 1"));
+        socketClient.send(new MessageJsonWithClass(addressFrom, addressTo, gson.toJson(userDataSet), userDataSet.getClass()));
         try {
             Thread.sleep(50_000);
         } catch (InterruptedException e) {

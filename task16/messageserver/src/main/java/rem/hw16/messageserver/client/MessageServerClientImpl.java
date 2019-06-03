@@ -24,7 +24,7 @@ public class MessageServerClientImpl implements MessageServerClient {
     @Override
     public Address register(String prefix) {
         Address addressFrom = null;
-        socketClient.send(new MessageRegisterRequest("FRONT"));
+        socketClient.send(new MessageRegisterRequest(prefix));
         try {
             final MessageRegisterResponse message = (MessageRegisterResponse) socketClient.take();
             addressFrom = message.getAddress();
@@ -41,7 +41,7 @@ public class MessageServerClientImpl implements MessageServerClient {
         try {
             MessageCompanionResponse message;
             do {
-                socketClient.send(new MessageCompanionRequest("DB"));
+                socketClient.send(new MessageCompanionRequest(prefix));
                 message = (MessageCompanionResponse) socketClient.take();
                 if (message.getAddress() != null) {
                     addressTo = message.getAddress();
