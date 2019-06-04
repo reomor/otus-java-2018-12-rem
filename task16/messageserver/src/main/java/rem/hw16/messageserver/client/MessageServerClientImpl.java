@@ -6,15 +6,28 @@ import rem.hw16.messageserver.message.MessageCompanionResponse;
 import rem.hw16.messageserver.message.MessageRegisterRequest;
 import rem.hw16.messageserver.message.MessageRegisterResponse;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MessageServerClientImpl implements MessageServerClient {
+public abstract class MessageServerClientImpl implements MessageServerClient {
     private static final Logger logger = Logger.getLogger(MessageServerClient.class.getName());
-    private final SocketClient socketClient;
 
-    public MessageServerClientImpl(SocketClient socketClient) {
-        this.socketClient = socketClient;
+    private SocketClient socketClient;
+    private final Address addressTo;
+    private final Address addressFrom;
+
+    public MessageServerClientImpl(String host, int port, String prefix, String companionPrefix) {
+        try {
+            this.socketClient = new SocketClientImpl(host, port);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Cannot establish connection host(" + host + "), port(" + port + ")");
+            throw new RuntimeException(e);
+        }
+        // wait for self addressFrom
+        this.addressFrom = register(prefix);
+        // wait for companion addressTo
+        this.addressTo = requestCompanion(companionPrefix);
     }
 
     public SocketClient getSocketClient() {
@@ -28,7 +41,7 @@ public class MessageServerClientImpl implements MessageServerClient {
         try {
             final MessageRegisterResponse message = (MessageRegisterResponse) socketClient.take();
             addressFrom = message.getAddress();
-            logger.log(Level.INFO, "Got addressFrom from server: " + addressFrom);
+            logger.log(Level.INFO, "Got address from server: " + addressFrom);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -36,7 +49,7 @@ public class MessageServerClientImpl implements MessageServerClient {
     }
 
     @Override
-    public Address getCompanion(String prefix) {
+    public Address requestCompanion(String prefix) {
         Address addressTo = null;
         try {
             MessageCompanionResponse message;
@@ -53,5 +66,20 @@ public class MessageServerClientImpl implements MessageServerClient {
             e.printStackTrace();
         }
         return addressTo;
+    }
+
+    @Override
+    public Address getAddressTo() {
+        return addressTo;
+    }
+
+    @Override
+    public Address getAddressFrom() {
+        return addressFrom;
+    }
+
+    @Override
+    public void close() throws IOException {
+        socketClient.close();
     }
 }
