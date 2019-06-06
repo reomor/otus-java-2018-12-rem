@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class FrontendMessageServerClient extends MessageServerClientImpl {
     private static final Logger logger = Logger.getLogger(FrontendMessageServerClient.class.getName());
-    public static final Gson gson = new GsonBuilder().create();
+    private static final Gson gson = new GsonBuilder().create();
 
     private final ExecutorService executorService;
     private FrontService frontService;

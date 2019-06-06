@@ -10,7 +10,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-@Service
 public class TemplateProcessor {
     private static final String TEMPLATE_DIR = "/template/";
     private final Configuration templateConfiguration;

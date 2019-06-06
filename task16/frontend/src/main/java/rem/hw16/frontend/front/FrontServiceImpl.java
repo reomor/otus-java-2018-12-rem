@@ -1,20 +1,23 @@
 package rem.hw16.frontend.front;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import rem.hw16.dbserver.domain.UserDataSet;
 import rem.hw16.frontend.client.FrontendMessageServerClient;
 import rem.hw16.messageserver.core.Message;
 import rem.hw16.messageserver.message.MessageGetUserByIdRequest;
+import rem.hw16.messageserver.message.MessageSaveUserRequest;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
 public class FrontServiceImpl implements FrontService {
     private final Map<Long, UserDataSet> userDataSetMap = new HashMap<>();
+    private static final Gson gson = new GsonBuilder().create();
+
     private final FrontendMessageServerClient frontendMessageServerClient;
 
     @Autowired
@@ -33,8 +36,12 @@ public class FrontServiceImpl implements FrontService {
 
     @Override
     public <T extends UserDataSet> void requestToSave(T userData) {
-//        Message message = new MessageSaveUserRequest(getAddress(), channel.getBackEnd(), userData);
-//        channel.getMessageSystem().sendMessage(message);
+        Message message = new MessageSaveUserRequest(
+                frontendMessageServerClient.getAddressFrom(),
+                frontendMessageServerClient.getAddressTo(),
+                gson.toJson(userData, userData.getClass()),
+                userData.getClass());
+        frontendMessageServerClient.getSocketClient().send(message);
     }
 
     @Override
