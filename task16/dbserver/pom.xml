@@ -33,6 +33,7 @@
             <groupId>otus.rem.java</groupId>
             <artifactId>messageserver</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
