@@ -26,6 +26,7 @@ public class FrontendMessageServerClient extends MessageServerClientImpl {
     public FrontendMessageServerClient(String host, int port) {
         super(host, port, "FRONT", "DB");
         this.executorService = Executors.newFixedThreadPool(1);
+        startClientLoop();
     }
 
     @Override

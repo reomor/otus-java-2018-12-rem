@@ -10,12 +10,6 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <listener>
-        <description>Application startup and shutdown events</description>
-        <display-name>Context Initializer</display-name>
-        <listener-class>rem.hw16.frontend.web.ContextInit</listener-class>
-    </listener>
-
     <filter>
         <filter-name>authorizationFilter</filter-name>
         <filter-class>rem.hw16.frontend.filter.AuthorizationFilter</filter-class>

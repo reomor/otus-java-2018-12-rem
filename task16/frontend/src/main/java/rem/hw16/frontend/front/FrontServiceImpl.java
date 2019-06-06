@@ -18,12 +18,7 @@ public class FrontServiceImpl implements FrontService {
     private final Map<Long, UserDataSet> userDataSetMap = new HashMap<>();
     private static final Gson gson = new GsonBuilder().create();
 
-    private final FrontendMessageServerClient frontendMessageServerClient;
-
-    @Autowired
-    public FrontServiceImpl(FrontendMessageServerClient frontendMessageServerClient) {
-        this.frontendMessageServerClient = frontendMessageServerClient;
-    }
+    private FrontendMessageServerClient frontendMessageServerClient;
 
     @Override
     public void requestById(long id) {
@@ -49,9 +44,11 @@ public class FrontServiceImpl implements FrontService {
         userDataSetMap.put(userData.getId(), userData);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends UserDataSet> T getUserData(long id) {
         if (userDataSetMap.containsKey(id)) {
+            // cast is safe because of extends
             return (T) userDataSetMap.get(id);
         }
         requestById(id);
@@ -61,5 +58,10 @@ public class FrontServiceImpl implements FrontService {
     @Override
     public Collection<UserDataSet> getUserDataSetCollection() {
         return Collections.unmodifiableCollection(userDataSetMap.values());
+    }
+
+    @Autowired
+    public void setFrontendMessageServerClient(FrontendMessageServerClient frontendMessageServerClient) {
+        this.frontendMessageServerClient = frontendMessageServerClient;
     }
 }
