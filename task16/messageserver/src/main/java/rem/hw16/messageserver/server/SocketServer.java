@@ -44,7 +44,8 @@ public class SocketServer implements SocketServerMBean {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (!executorService.isShutdown()) {
                 Socket socket = serverSocket.accept();
-                SocketClient socketClient = new SocketClientImpl(socket);
+                SocketClientImpl socketClient = new SocketClientImpl(socket);
+                socketClient.addCloseObserver(() -> clientList.remove(socketClient));
                 clientList.add(socketClient);
                 logger.log(Level.INFO, "Client connected: " + socket);
             }

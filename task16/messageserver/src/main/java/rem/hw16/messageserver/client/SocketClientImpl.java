@@ -4,6 +4,8 @@ import rem.hw16.messageserver.core.Message;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class SocketClientImpl implements SocketClient {
@@ -15,6 +17,8 @@ public class SocketClientImpl implements SocketClient {
     private final BlockingQueue<Message> output = new LinkedBlockingQueue<>();
     private final BlockingQueue<Message> input = new LinkedBlockingQueue<>();
 
+    private final List<Runnable> closeObservers;
+
     public SocketClientImpl(String host, int port) throws IOException {
         this(new Socket(host, port));
     }
@@ -22,8 +26,13 @@ public class SocketClientImpl implements SocketClient {
     public SocketClientImpl(Socket socket) {
         this.socket = socket;
         this.executorService = Executors.newFixedThreadPool(WORKERS_COUNT);
+        this.closeObservers = new ArrayList<>();
         executorService.submit(this::sendMessage);
         executorService.submit(this::receiveMessage);
+    }
+
+    public void addCloseObserver(Runnable runnable) {
+        this.closeObservers.add(runnable);
     }
 
     @Override
@@ -44,6 +53,8 @@ public class SocketClientImpl implements SocketClient {
     @Override
     public void close() throws IOException {
         socket.close();
+        closeObservers.forEach(Runnable::run);
+        closeObservers.clear();
         executorService.shutdown();
     }
 
@@ -66,6 +77,12 @@ public class SocketClientImpl implements SocketClient {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
