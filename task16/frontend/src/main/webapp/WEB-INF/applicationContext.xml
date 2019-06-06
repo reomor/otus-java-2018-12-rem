@@ -5,10 +5,13 @@
 
     <bean id="templateProcessor" class="rem.hw16.frontend.web.TemplateProcessor"/>
 
-    <bean id="frontendMessageServerClient" class="rem.hw16.frontend.client.FrontendMessageServerClient">
+    <bean id="frontendMessageServerClient" class="rem.hw16.frontend.client.FrontendMessageServerClient" lazy-init="true">
         <constructor-arg name="host" value="localhost"/>
         <constructor-arg name="port" value="6000"/>
+        <property name="frontService" ref="frontService"/>
     </bean>
 
-    <bean id="frontService" class="rem.hw16.frontend.front.FrontServiceImpl"/>
+    <bean id="frontService" class="rem.hw16.frontend.front.FrontServiceImpl">
+        <property name="frontendMessageServerClient" ref="frontendMessageServerClient"/>
+    </bean>
 </beans>

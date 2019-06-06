@@ -60,7 +60,6 @@ public class FrontServiceImpl implements FrontService {
         return Collections.unmodifiableCollection(userDataSetMap.values());
     }
 
-    @Autowired
     public void setFrontendMessageServerClient(FrontendMessageServerClient frontendMessageServerClient) {
         this.frontendMessageServerClient = frontendMessageServerClient;
     }
