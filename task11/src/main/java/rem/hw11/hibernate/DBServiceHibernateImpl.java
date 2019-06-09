@@ -3,16 +3,15 @@ package rem.hw11.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.ServiceRegistry;
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.dbcommon.ConnectionHelper;
 import rem.hw11.dbcommon.DBService;
 import rem.hw11.domain.AddressDataSet;
 import rem.hw11.domain.PhoneDataSet;
 import rem.hw11.domain.UserDataSet;
+import rem.hw11.exception.DBServiceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,24 +33,29 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
     }
 
     @Override
-    public String getConnectionMetaData() throws SQLException {
-        Connection connection = sessionFactory.getSessionFactoryOptions().getServiceRegistry().
-                getService(ConnectionProvider.class).getConnection();
-        return ConnectionHelper.getConnectionMetadata(connection);
+    public String getConnectionMetaData() {
+        try (Connection connection = sessionFactory.getSessionFactoryOptions()
+                .getServiceRegistry()
+                .getService(ConnectionProvider.class)
+                .getConnection()) {
+            return ConnectionHelper.getConnectionMetadata(connection);
+        } catch (SQLException e) {
+            throw new DBServiceException(e.getLocalizedMessage());
+        }
     }
 
     @Override
-    public void save(UserDataSet dataSetEntity) throws SQLException {
+    public void save(UserDataSet dataSetEntity) {
         dataSetDao.save(dataSetEntity);
     }
 
     @Override
-    public UserDataSet load(long id) throws SQLException {
+    public UserDataSet load(long id) {
         return dataSetDao.load(id);
     }
 
     @Override
-    public List<UserDataSet> loadAll() throws SQLException {
+    public List<UserDataSet> loadAll() {
         return dataSetDao.loadAll();
     }
 
@@ -63,7 +67,7 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
 
     @Override
     public void deleteTables() {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             final Transaction transaction = session.beginTransaction();
             session.createNativeQuery(TRUNCATE_TABLES).executeUpdate();
             transaction.commit();
