@@ -1,9 +1,0 @@
-package rem.hw11.executor;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-@FunctionalInterface
-public interface TResultSetHandler<T> {
-    T handle(ResultSet resultSet) throws SQLException;
-}

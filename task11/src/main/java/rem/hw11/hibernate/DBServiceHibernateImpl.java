@@ -29,26 +29,8 @@ public class DBServiceHibernateImpl implements DBService<UserDataSet> {
         configuration.addAnnotatedClass(AddressDataSet.class);
         configuration.addAnnotatedClass(PhoneDataSet.class);
 
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:hsqldb:mem:mymemdb");
-        configuration.setProperty("hibernate.connection.username", "SA");
-        configuration.setProperty("hibernate.connection.password", "");
-        configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-        configuration.setProperty("hibernate.connection.useSSL", "false");
-
-        configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
-
-        sessionFactory = createSessionFactory(configuration);
+        sessionFactory = configuration.configure().buildSessionFactory();
         dataSetDao = new UserDataSetHibernateDaoImpl(sessionFactory);
-    }
-
-    private static SessionFactory createSessionFactory(Configuration configuration) {
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-        builder.applySettings(configuration.getProperties());
-        final ServiceRegistry serviceRegistry = builder.build();
-        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     @Override
