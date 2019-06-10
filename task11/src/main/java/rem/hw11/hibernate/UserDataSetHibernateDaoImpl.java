@@ -4,7 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import rem.hw11.dao.DataSetDao;
 import rem.hw11.domain.UserDataSet;
-import rem.hw11.executor.Executor;
+import rem.hw11.executor.ExecutorHibernate;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,19 +19,19 @@ public class UserDataSetHibernateDaoImpl implements DataSetDao<UserDataSet> {
 
     @Override
     public void save(UserDataSet dataSetEntity) {
-        Executor.update(sessionFactory, session ->
+        ExecutorHibernate.update(sessionFactory, session ->
                 session.save(dataSetEntity));
     }
 
     @Override
     public UserDataSet load(long id) {
-        return Executor.query(sessionFactory, session ->
+        return ExecutorHibernate.query(sessionFactory, session ->
                 session.load(getType(), id));
     }
 
     @Override
     public List<UserDataSet> loadAll() {
-        return Executor.query(sessionFactory, session -> {
+        return ExecutorHibernate.query(sessionFactory, session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             final CriteriaQuery<UserDataSet> criteria = builder.createQuery(getType());
             criteria.from(getType());
