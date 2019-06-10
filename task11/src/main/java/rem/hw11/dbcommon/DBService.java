@@ -13,10 +13,6 @@ public interface DBService<T extends DataSet> {
 
     List<T> loadAll();
 
-    void createTables();
-
-    void deleteTables();
-
     void closeConnection();
 
     Class<T> getType();
