@@ -20,7 +20,11 @@ import java.util.Map;
 
 public class AdminServlet extends AbstractServlet {
     public static String pathSpec = "admin";
-    private String ADMIN_TEMPLATE_PAGE = "admin.ftl";
+    private static final String ADMIN_TEMPLATE_PAGE = "admin.ftl";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_USER = "user";
+    private static final String KEY_CACHEDUSERS = "cachedUsers";
+
     private TemplateProcessor templateProcessor;
     private FrontService frontService;
 
@@ -45,20 +49,20 @@ public class AdminServlet extends AbstractServlet {
         Map<String, Object> model = new HashMap<>();
         String username = "N/A";
         for (Cookie cookie : request.getCookies()) {
-            if ("username".equals(cookie.getName())) {
+            if (KEY_USERNAME.equals(cookie.getName())) {
                 username = cookie.getValue();
                 break;
             }
         }
-        model.put("username", username);
-        model.put("cachedUsers", frontService.getUserDataSetCollection());
+        model.put(KEY_USERNAME, username);
+        model.put(KEY_CACHEDUSERS, frontService.getUserDataSetCollection());
 
         String userId = request.getParameter("id");
         if (userId != null && !userId.isEmpty()) {
             final int parsedId = Integer.parseInt(userId);
             final UserDataSet userDataSet = frontService.getUserData(parsedId);
             if (userDataSet != null) {
-                model.put("user", userDataSet);
+                model.put(KEY_USER, userDataSet);
             }
             frontService.requestById(parsedId);
         }

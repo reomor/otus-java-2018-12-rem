@@ -29,32 +29,9 @@ public class DBServiceMessageServerClient extends MessageServerClientImpl {
             try {
                 final Message message = getSocketClient().take();
                 if (message instanceof MessageGetUserByIdRequest) {
-                    MessageGetUserByIdRequest messageGetUserByIdRequest = (MessageGetUserByIdRequest) message;
-                    logger.log(Level.INFO, "Got message (" + messageGetUserByIdRequest.getClass() + ")");
-                    final UserDataSet userDataSet = dbService.load(messageGetUserByIdRequest.getId());
-                    if (userDataSet != null) {
-                        getSocketClient().send(new MessageGetUserByIdResponse(
-                                messageGetUserByIdRequest.getTo(),
-                                messageGetUserByIdRequest.getFrom(),
-                                gson.toJson(userDataSet, userDataSet.getClass()),
-                                userDataSet.getClass())
-                        );
-                    } else {
-                        logger.log(Level.INFO, "Object by id(" + messageGetUserByIdRequest.getId() + ") is null");
-                    }
+                    handleMessageGetUserByIdRequest((MessageGetUserByIdRequest) message);
                 } else if (message instanceof MessageSaveUserRequest) {
-                    MessageSaveUserRequest messageSaveUserRequest = (MessageSaveUserRequest) message;
-                    logger.log(Level.INFO, "Got message (" + messageSaveUserRequest.getClass() + ")");
-                    try {
-                        final UserDataSet userDataSet = (UserDataSet) gson.fromJson(
-                                messageSaveUserRequest.getJsonMessage(),
-                                Class.forName(messageSaveUserRequest.getClazz())
-                        );
-                        logger.log(Level.INFO, "Save object(" + userDataSet + ") in DB");
-                        dbService.save(userDataSet);
-                    } catch (ClassNotFoundException e) {
-                        logger.log(Level.WARNING, "Object in message(" + messageSaveUserRequest + ") has wrong type(" + messageSaveUserRequest.getClazz() + ")");
-                    }
+                    handleMessageSaveUserRequest((MessageSaveUserRequest) message);
                 } else {
                     logger.log(Level.WARNING, "Message type is unknown(" + message.getClass() + ")");
                 }
@@ -67,5 +44,44 @@ public class DBServiceMessageServerClient extends MessageServerClientImpl {
     @Override
     public void close() throws IOException {
         super.close();
+    }
+
+    private void handleMessageGetUserByIdRequest(MessageGetUserByIdRequest messageGetUserByIdRequest) {
+        logger.log(Level.INFO, "Got message (" + messageGetUserByIdRequest.getClass() + ")");
+        UserDataSet userDataSet = null;
+        try {
+            userDataSet = dbService.load(messageGetUserByIdRequest.getId());
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Error in DB during load object by id(" + messageGetUserByIdRequest.getId() + ")");
+        }
+        if (userDataSet != null) {
+            getSocketClient().send(new MessageGetUserByIdResponse(
+                    messageGetUserByIdRequest.getTo(),
+                    messageGetUserByIdRequest.getFrom(),
+                    gson.toJson(userDataSet, userDataSet.getClass()),
+                    userDataSet.getClass())
+            );
+        } else {
+            logger.log(Level.INFO, "Object by id(" + messageGetUserByIdRequest.getId() + ") is null");
+        }
+    }
+
+    private void handleMessageSaveUserRequest(MessageSaveUserRequest messageSaveUserRequest) {
+        logger.log(Level.INFO, "Got message (" + messageSaveUserRequest.getClass() + ")");
+        try {
+            final UserDataSet userDataSet = (UserDataSet) gson.fromJson(
+                    messageSaveUserRequest.getJsonMessage(),
+                    Class.forName(messageSaveUserRequest.getClazz())
+            );
+            logger.log(Level.INFO, "Save object(" + userDataSet + ") in DB");
+            try {
+                dbService.save(userDataSet);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Error in DB during save object(" + userDataSet + ")");
+            }
+        } catch (ClassNotFoundException e) {
+            logger.log(Level.WARNING, "Object in message(" + messageSaveUserRequest + ") " +
+                    "has wrong type(" + messageSaveUserRequest.getClazz() + ")");
+        }
     }
 }
