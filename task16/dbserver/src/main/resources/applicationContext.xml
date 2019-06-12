@@ -1,0 +1,13 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="dbService" class="rem.hw16.dbserver.hibernate.DBServiceHibernateImpl"/>
+
+    <bean id="dbServiceMessageServerClient" class="rem.hw16.dbserver.client.DBServiceMessageServerClient">
+        <constructor-arg name="host" value="localhost"/>
+        <constructor-arg name="port" value="6000"/>
+        <constructor-arg name="dbService" ref="dbService"/>
+    </bean>
+</beans>

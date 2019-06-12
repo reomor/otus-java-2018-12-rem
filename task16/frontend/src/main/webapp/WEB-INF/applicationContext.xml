@@ -1,0 +1,17 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="templateProcessor" class="rem.hw16.frontend.web.TemplateProcessor"/>
+
+    <bean id="frontendMessageServerClient" class="rem.hw16.frontend.client.FrontendMessageServerClient" lazy-init="true">
+        <constructor-arg name="host" value="localhost"/>
+        <constructor-arg name="port" value="6000"/>
+        <property name="frontService" ref="frontService"/>
+    </bean>
+
+    <bean id="frontService" class="rem.hw16.frontend.front.FrontServiceImpl">
+        <property name="frontendMessageServerClient" ref="frontendMessageServerClient"/>
+    </bean>
+</beans>
