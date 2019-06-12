@@ -1,5 +1,8 @@
 package rem.hw16.messageserver.core;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class AddressedMessage extends Message {
     private final Address from;
     private final Address to;
