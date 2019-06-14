@@ -1,22 +1,23 @@
 package rem.hw16.messageserver.client;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
-import java.net.URI;
+import java.net.URISyntaxException;
 
 public class WsClientMain {
-    public static void main(String[] args) {
-        try {
-            String dest = "ws://localhost:8080/wsmserver";
-            WsSocketClient wsSocketClient = new WsSocketClientImpl();
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(wsSocketClient, new URI(dest));
-            while (true) {
-                Thread.sleep(500);
-                wsSocketClient.sendMessage("message");
+    public static void main(String[] args) throws URISyntaxException {
+        WsMessageServerClient wsMessageServerClient = new WsMessageServerClientImpl("ws://localhost:8080/wsmserver") {
+            @Override
+            public void startClientLoop() {
+                while (true) {
+                    getWebSocketClient().sendMessage("msg");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
             }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        };
+        wsMessageServerClient.startClientLoop();
     }
 }
