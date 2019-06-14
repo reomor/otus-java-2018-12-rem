@@ -1,5 +1,7 @@
 package rem.hw16.messageserver.client;
 
+import rem.hw16.messageserver.client.base.SocketClient;
+import rem.hw16.messageserver.client.base.SocketClientImpl;
 import rem.hw16.messageserver.core.Address;
 import rem.hw16.messageserver.message.MessageCompanionRequest;
 import rem.hw16.messageserver.message.MessageCompanionResponse;

@@ -1,5 +1,6 @@
 package rem.hw16.messageserver.client;
 
+import rem.hw16.messageserver.client.base.SocketClient;
 import rem.hw16.messageserver.core.Address;
 
 import java.io.IOException;

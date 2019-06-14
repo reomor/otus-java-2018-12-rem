@@ -1,4 +1,4 @@
-package rem.hw16.messageserver.client;
+package rem.hw16.messageserver.client.base;
 
 import rem.hw16.messageserver.core.Address;
 import rem.hw16.messageserver.core.WsMessage;
@@ -9,13 +9,13 @@ import javax.websocket.*;
 import java.io.IOException;
 
 @ClientEndpoint(encoders = WsMessageEncoder.class, decoders = WsMessageDecoder.class)
-public class WsSocketClientImpl implements WsSocketClient {
+public class WebSocketClientImpl implements WebSocketClient {
     private Session session;
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        System.out.println("WebSocket opened: " + session.getId());
         this.session = session;
+        System.out.println("WebSocket opened: " + session.getId());
     }
 
     @OnMessage
@@ -33,6 +33,7 @@ public class WsSocketClientImpl implements WsSocketClient {
         System.out.println(throwable.getLocalizedMessage());
     }
 
+    @Override
     public void sendMessage(String content) {
         try {
             session.getBasicRemote().sendObject(new WsMessage(new Address("1"), new Address("2"), content));

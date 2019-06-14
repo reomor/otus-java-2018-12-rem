@@ -1,4 +1,4 @@
-package rem.hw16.messageserver.client;
+package rem.hw16.messageserver.client.base;
 
 import rem.hw16.messageserver.core.Message;
 
