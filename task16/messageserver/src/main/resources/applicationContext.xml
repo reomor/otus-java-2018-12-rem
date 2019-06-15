@@ -1,0 +1,15 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="socketServer" class="rem.hw16.messageserver.server.SocketServer"/>
+
+    <bean id="webSocketServer" class="rem.hw16.messageserver.server.WebSocketServer"/>
+
+    <bean id="wsServerMessageServerClient" class="rem.hw16.messageserver.server.ws.WsServerMessageServerClient"
+          lazy-init="true">
+        <constructor-arg name="host" value="localhost"/>
+        <constructor-arg name="port" value="6000"/>
+    </bean>
+</beans>
