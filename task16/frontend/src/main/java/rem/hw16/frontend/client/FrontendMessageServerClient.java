@@ -31,6 +31,7 @@ public class FrontendMessageServerClient extends MessageServerClientImpl {
 
     @Override
     public void startClientLoop() {
+        executorService.submit(this::initClient);
         executorService.submit(() -> {
             do {
                 try {

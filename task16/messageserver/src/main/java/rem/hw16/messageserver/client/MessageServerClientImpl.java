@@ -16,16 +16,23 @@ public abstract class MessageServerClientImpl implements MessageServerClient {
     private static final Logger logger = Logger.getLogger(MessageServerClient.class.getName());
 
     private SocketClient socketClient;
-    private final Address addressTo;
-    private final Address addressFrom;
+    private final String prefix;
+    private final String companionPrefix;
+    private Address addressTo;
+    private Address addressFrom;
 
     public MessageServerClientImpl(String host, int port, String prefix, String companionPrefix) {
         try {
             this.socketClient = new SocketClientImpl(host, port);
+            this.prefix = prefix;
+            this.companionPrefix = companionPrefix;
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Cannot establish connection host(" + host + "), port(" + port + ")");
             throw new RuntimeException(e);
         }
+    }
+
+    public void initClient() {
         // wait for self addressFrom
         this.addressFrom = register(prefix);
         // wait for companion addressTo

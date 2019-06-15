@@ -1,4 +1,7 @@
-package rem.hw16.messageserver.client;
+package rem.hw16.messageserver;
+
+import rem.hw16.messageserver.client.WsMessageServerClient;
+import rem.hw16.messageserver.client.WsMessageServerClientImpl;
 
 import java.net.URISyntaxException;
 
