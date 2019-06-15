@@ -28,7 +28,7 @@ public class ServerMain {
     private static final String SOURCE_JETTY_HOME = "C:\\jetty-distribution-9.4.18.v20190429";
     private static final String SOURCE_JETTY_WEBAPPS = SOURCE_JETTY_HOME + "\\webapps";
     private static final String SOURCE_WAR = "frontend\\target\\frontend.war";
-    private static final int CLIENT_START_DELAY_IN_SEC = 3;
+    private static final int CLIENT_START_DELAY_IN_SEC = 2;
 
     private List<ProcessRunner> processRunnerList = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class ServerMain {
     }
 
     private void startServer(ScheduledExecutorService executorService, WebSocketServer webSocketServer) {
-        startServer(executorService, webSocketServer, CLIENT_START_DELAY_IN_SEC);
+        startServer(executorService, webSocketServer, CLIENT_START_DELAY_IN_SEC + 1);
     }
 
     private void startServer(ScheduledExecutorService executorService, WebSocketServer webSocketServer, int serverStartDelayInSec) {

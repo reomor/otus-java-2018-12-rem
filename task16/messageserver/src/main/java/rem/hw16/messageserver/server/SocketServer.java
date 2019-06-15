@@ -1,5 +1,6 @@
 package rem.hw16.messageserver.server;
 
+import org.springframework.stereotype.Component;
 import rem.hw16.messageserver.client.base.SocketClient;
 import rem.hw16.messageserver.client.base.SocketClientImpl;
 import rem.hw16.messageserver.core.Address;
@@ -21,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Component
 public class SocketServer implements SocketServerMBean {
     private static final Logger logger = Logger.getLogger(SocketServer.class.getName());
     private static final int PORT = 6000;

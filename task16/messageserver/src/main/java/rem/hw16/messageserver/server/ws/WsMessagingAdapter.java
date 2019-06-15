@@ -6,14 +6,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import rem.hw16.messageserver.message.MessageJson;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Component
 public class WsMessagingAdapter extends WebSocketAdapter {
     private static final Logger logger = Logger.getLogger(WsMessagingAdapter.class.getName());
     private static final Gson gson = new GsonBuilder().create();
@@ -40,13 +37,14 @@ public class WsMessagingAdapter extends WebSocketAdapter {
         }
         try {
             //echo
+            session.getRemote().sendString(message);
+            logger.log(Level.INFO, "Send to socket: " + wsServerMessageServerClient);
             wsServerMessageServerClient.getSocketClient().send(new MessageJson(
                     wsServerMessageServerClient.getAddressFrom(),
                     wsServerMessageServerClient.getAddressTo(),
                     message));
-            session.getRemote().sendString(message);
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -61,9 +59,7 @@ public class WsMessagingAdapter extends WebSocketAdapter {
         System.out.println("Error: " + cause.getLocalizedMessage());
     }
 
-    @Autowired
     public void setWsServerMessageServerClient(WsServerMessageServerClient wsServerMessageServerClient) {
         this.wsServerMessageServerClient = wsServerMessageServerClient;
-        System.out.println("injected");
     }
 }

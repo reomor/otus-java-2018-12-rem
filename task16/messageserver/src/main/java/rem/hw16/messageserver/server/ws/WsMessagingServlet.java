@@ -1,7 +1,6 @@
 package rem.hw16.messageserver.server.ws;
 
-import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
-import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import org.eclipse.jetty.websocket.servlet.*;
 
 public class WsMessagingServlet extends WebSocketServlet {
     @Override
