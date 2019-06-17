@@ -63,20 +63,15 @@ public class SocketServer implements SocketServerMBean {
                 if (message instanceof MessageRegisterRequest) {
                     MessageRegisterRequest request = (MessageRegisterRequest) message;
                     logger.log(Level.INFO, "Got register request: " + request);
-                    final Address address = new Address(request.getPrefix());
-                    //
-                    addressMap.putIfAbsent(request.getPrefix(), new ConcurrentLinkedDeque<>());
-                    addressMap.get(request.getPrefix()).add(address);
-                    addressSocketClientMap.put(address, socketClient);
-                    socketClient.send(new MessageRegisterResponse(address));
-                    continue;
-                } else if (message instanceof MessageCompanionRequest) { //
+                    final String prefix = request.getPrefix();
+                    final Address address = new Address(prefix);
+                    register(prefix, address, socketClient);
+                } else if (message instanceof MessageCompanionRequest) {
+                    // request companion
                     final MessageCompanionRequest request = (MessageCompanionRequest) message;
-                    if (addressMap.containsKey(request.getPrefix())) {
-                        socketClient.send(new MessageCompanionResponse(addressMap.get(request.getPrefix()).poll()));
-                    } else {
-                        socketClient.send(new MessageCompanionResponse(null));
-                    }
+                    logger.log(Level.INFO, "Got companion request: " + request);
+                    final String prefix = request.getPrefix();
+                    requestCompanionResponse(prefix, socketClient);
                 } else if (message instanceof AddressedMessage) {
                     AddressedMessage addressedMessage = (AddressedMessage) message;
                     logger.log(Level.INFO, "Got message to redirect: " + addressedMessage);
@@ -94,6 +89,24 @@ public class SocketServer implements SocketServerMBean {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void register(String prefix, Address address, SocketClient socketClient) {
+        addressMap.putIfAbsent(prefix, new ConcurrentLinkedDeque<>());
+        addressMap.get(prefix).add(address);
+        addressSocketClientMap.put(address, socketClient);
+        socketClient.send(new MessageRegisterResponse(address));
+    }
+
+    private void requestCompanionResponse(String prefix, SocketClient socketClient) {
+        if (addressMap.containsKey(prefix)) {
+            // ring buffer
+            final Address address = addressMap.get(prefix).poll();
+            addressMap.get(prefix).addLast(address);
+            socketClient.send(new MessageCompanionResponse(address));
+        } else {
+            socketClient.send(new MessageCompanionResponse(null));
         }
     }
 

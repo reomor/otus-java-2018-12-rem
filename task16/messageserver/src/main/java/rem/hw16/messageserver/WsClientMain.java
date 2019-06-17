@@ -5,6 +5,9 @@ import rem.hw16.messageserver.client.WsMessageServerClientImpl;
 
 import java.net.URISyntaxException;
 
+/**
+ * WebSocket client example
+ */
 public class WsClientMain {
     public static void main(String[] args) throws URISyntaxException {
         WsMessageServerClient wsMessageServerClient = new WsMessageServerClientImpl("ws://localhost:8080/wsmserver") {

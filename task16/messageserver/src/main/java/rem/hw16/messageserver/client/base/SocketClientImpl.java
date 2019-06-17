@@ -7,8 +7,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SocketClientImpl implements SocketClient {
+    private static final Logger logger = Logger.getLogger(SocketClientImpl.class.getName());
+
     private static final int WORKERS_COUNT = 2;
 
     private final Socket socket;
@@ -76,7 +80,7 @@ public class SocketClientImpl implements SocketClient {
                 input.add(message);
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Receiver got error(" + e.getLocalizedMessage() + ")");
         } finally {
             try {
                 close();
@@ -85,4 +89,6 @@ public class SocketClientImpl implements SocketClient {
             }
         }
     }
+
+    //TODO health check message
 }

@@ -45,10 +45,9 @@
     }
 
     function send() {
-        var text = document.getElementById("input").value;
         var json = JSON.stringify({
             type: "getbyid",
-            message: text
+            id: document.getElementById("input").value
         });
         console.log(json);
         webSocket.send(json);

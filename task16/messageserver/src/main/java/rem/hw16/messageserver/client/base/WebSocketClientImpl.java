@@ -36,6 +36,7 @@ public class WebSocketClientImpl implements WebSocketClient {
     @Override
     public void sendMessage(String content) {
         try {
+            //fixme example
             session.getBasicRemote().sendObject(new WsMessage(new Address("1"), new Address("2"), content));
         } catch (IOException | EncodeException e) {
             e.printStackTrace();

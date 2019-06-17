@@ -16,3 +16,6 @@ java -jar start.jar
 cd C:\Git\java\otus-java\otus-java-2018-12-rem\task16
 java -jar messageserver\target\messageserver.jar
 ```
+
+Полезное:
+- Запуск jetty c портом java -jar start.jar -Djetty.port=9999

@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
-import rem.hw16.messageserver.message.MessageJson;
+import rem.hw16.messageserver.message.MessageGetUserByIdRequest;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -25,29 +25,30 @@ public class WsMessagingAdapter extends WebSocketAdapter {
         this.session = session;
         this.wsServerMessageServerClient = new WsServerMessageServerClient("localhost", 6000, session);
         this.wsServerMessageServerClient.initClientRegisterAndRequestCompanion();
+        this.wsServerMessageServerClient.startClientLoop();
     }
 
     @Override
     public void onWebSocketText(String message) {
-        System.out.println("text: " + message);
-        logger.log(Level.INFO, "text: " + message);
+        logger.log(Level.INFO, "Got message from ui: " + message);
         final JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
-        final JsonElement type = jsonObject.get("type");
-        if (type != null) {
-            logger.log(Level.INFO, "type: " + jsonObject.get("type").getAsString());
+        final JsonElement typeElement = jsonObject.get("type");
+        if (typeElement != null) {
+            final String type = jsonObject.get("type").getAsString();
+            logger.log(Level.INFO, "type: " + type);
+            if ("getbyid".equals(type)) {
+                wsServerMessageServerClient.getSocketClient().send(
+                        new MessageGetUserByIdRequest(
+                                wsServerMessageServerClient.getAddressFrom(),
+                                wsServerMessageServerClient.getAddressTo(),
+                                jsonObject.get("id").getAsLong()
+                        )
+                );
+            } else {
+                logger.log(Level.WARNING, "Unknown message type: " + type);
+            }
         } else {
-            logger.log(Level.WARNING, "Unknown message type: " + message);
-        }
-        try {
-            //echo
-            session.getRemote().sendString(message);
-            logger.log(Level.INFO, "Send to socket: " + wsServerMessageServerClient);
-            wsServerMessageServerClient.getSocketClient().send(new MessageJson(
-                    wsServerMessageServerClient.getAddressFrom(),
-                    wsServerMessageServerClient.getAddressTo(),
-                    message));
-        } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Message doesn't have type: " + message);
         }
     }
 
@@ -63,7 +64,6 @@ public class WsMessagingAdapter extends WebSocketAdapter {
 
     @Override
     public void onWebSocketError(Throwable cause) {
-        //cause.printStackTrace();
         System.out.println("Error: " + cause.getLocalizedMessage());
     }
 }
