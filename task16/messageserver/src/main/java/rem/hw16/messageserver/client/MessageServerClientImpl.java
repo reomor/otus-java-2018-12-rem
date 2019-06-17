@@ -32,11 +32,15 @@ public abstract class MessageServerClientImpl implements MessageServerClient {
         }
     }
 
-    public void initClient() {
+    public void initClientRegisterAndRequestCompanion() {
         // wait for self addressFrom
         this.addressFrom = register(prefix);
         // wait for companion addressTo
         this.addressTo = requestCompanion(companionPrefix);
+    }
+
+    public void initClientRegister() {
+        this.addressFrom = register(prefix);
     }
 
     public SocketClient getSocketClient() {

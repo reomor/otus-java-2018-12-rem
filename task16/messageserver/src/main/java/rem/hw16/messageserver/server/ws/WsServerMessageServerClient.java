@@ -1,41 +1,38 @@
 package rem.hw16.messageserver.server.ws;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.eclipse.jetty.websocket.api.Session;
 import rem.hw16.messageserver.client.MessageServerClientImpl;
 import rem.hw16.messageserver.core.Message;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Component
 public class WsServerMessageServerClient extends MessageServerClientImpl {
     private static final Logger logger = Logger.getLogger(WsServerMessageServerClient.class.getName());
+    private static final Gson gson = new GsonBuilder().create();
 
-    @Autowired
-    public WsServerMessageServerClient(String host, int port) {
+    private final Session session;
+
+    public WsServerMessageServerClient(String host, int port, Session session) {
         super(host, port, "WS", "DB");
+        this.session = session;
     }
 
     @Override
     public void startClientLoop() {
-        initClient();
-        System.out.println("wsClientLoop");
+        initClientRegisterAndRequestCompanion();
         do {
             try {
                 final Message message = getSocketClient().take();
                 logger.log(Level.INFO, "Got message: " + message);
-                /*
-                if (message instanceof MessageGetUserByIdRequest) {
-                    handleMessageGetUserByIdRequest((MessageGetUserByIdRequest) message);
-                } else if (message instanceof MessageSaveUserRequest) {
-                    handleMessageSaveUserRequest((MessageSaveUserRequest) message);
-                } else {
-                    logger.log(Level.WARNING, "Message type is unknown(" + message.getClass() + ")");
-                }
-                //*/
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                final String jsonString = gson.toJson(message);
+                session.getRemote().sendString(jsonString);
+            } catch (InterruptedException | IOException e) {
+                //e.printStackTrace();
+                logger.log(Level.WARNING, "Error(" + e.getLocalizedMessage() + " during message handle and sending");
             }
         } while (true);
     }

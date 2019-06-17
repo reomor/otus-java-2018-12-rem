@@ -8,6 +8,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import rem.hw16.messageserver.message.MessageJson;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,8 @@ public class WsMessagingAdapter extends WebSocketAdapter {
     public void onWebSocketConnect(Session session) {
         logger.log(Level.INFO, "Connected client: " + session);
         this.session = session;
+        this.wsServerMessageServerClient = new WsServerMessageServerClient("localhost", 6000, session);
+        this.wsServerMessageServerClient.initClientRegisterAndRequestCompanion();
     }
 
     @Override
@@ -51,15 +54,16 @@ public class WsMessagingAdapter extends WebSocketAdapter {
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
+        try {
+            wsServerMessageServerClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onWebSocketError(Throwable cause) {
         //cause.printStackTrace();
         System.out.println("Error: " + cause.getLocalizedMessage());
-    }
-
-    public void setWsServerMessageServerClient(WsServerMessageServerClient wsServerMessageServerClient) {
-        this.wsServerMessageServerClient = wsServerMessageServerClient;
     }
 }

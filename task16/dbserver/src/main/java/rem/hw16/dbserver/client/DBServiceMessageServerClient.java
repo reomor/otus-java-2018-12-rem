@@ -25,7 +25,7 @@ public class DBServiceMessageServerClient extends MessageServerClientImpl {
 
     @Override
     public void startClientLoop() {
-        initClient();
+        initClientRegister();
         do {
             try {
                 final Message message = getSocketClient().take();
