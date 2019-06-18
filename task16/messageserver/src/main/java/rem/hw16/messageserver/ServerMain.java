@@ -60,7 +60,12 @@ public class ServerMain {
         mBeanServer.registerMBean(socketServer, objectName);
         //deployWar(SOURCE_WAR, SOURCE_JETTY_WEBAPPS);
         //startClient(executorService, COMMAND_JETTY_START);
-        startClient(executorService, () -> context.getBean("wsServerMessageServerClient", WsServerMessageServerClient.class).startClientLoop());
+        startClient(executorService, () -> {
+                    logger.log(Level.INFO, "Starting websocket client ...");
+                    context.getBean("wsServerMessageServerClient", WsServerMessageServerClient.class)
+                            .startClientLoop();
+                }
+        );
         startServer(executorService, webSocketServer);
         startClient(executorService, COMMAND_DBSERVICE_START);
         socketServer.start();
@@ -89,6 +94,7 @@ public class ServerMain {
                 final ProcessRunner processRunner = new ProcessRunnerImpl();
                 processRunnerList.add(processRunner);
                 processRunner.start(command);
+                logger.log(Level.INFO, "Starting " + command);
             } catch (IOException e) {
                 logger.log(Level.WARNING, "Process started with exception(" + e.getLocalizedMessage() + ")");
             }
@@ -97,7 +103,7 @@ public class ServerMain {
 
     private void deployWar(String warPath, String jettyHomeWarPath) {
         try {
-            System.out.println(new java.io.File( "." ).getCanonicalPath());
+            System.out.println(new java.io.File(".").getCanonicalPath());
             Files.copy(Paths.get(warPath),
                     Paths.get(jettyHomeWarPath + "\\root.war"),
                     StandardCopyOption.REPLACE_EXISTING);

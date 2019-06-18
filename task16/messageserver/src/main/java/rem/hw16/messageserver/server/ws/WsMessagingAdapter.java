@@ -17,15 +17,12 @@ public class WsMessagingAdapter extends WebSocketAdapter {
     private static final Gson gson = new GsonBuilder().create();
 
     private WsServerMessageServerClient wsServerMessageServerClient;
-    private Session session;
 
     @Override
     public void onWebSocketConnect(Session session) {
         logger.log(Level.INFO, "Connected client: " + session);
-        this.session = session;
         this.wsServerMessageServerClient = new WsServerMessageServerClient("localhost", 6000, session);
-        this.wsServerMessageServerClient.initClientRegisterAndRequestCompanion();
-        this.wsServerMessageServerClient.startClientLoop();
+        wsServerMessageServerClient.startClientLoop();
     }
 
     @Override

@@ -2,9 +2,11 @@ package rem.hw16.messageserver.server.ws;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.eclipse.jetty.websocket.api.Session;
 import rem.hw16.messageserver.client.MessageServerClientImpl;
 import rem.hw16.messageserver.core.Message;
+import rem.hw16.messageserver.message.MessageGetUserByIdResponse;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -27,18 +29,36 @@ public class WsServerMessageServerClient extends MessageServerClientImpl {
 
     @Override
     public void startClientLoop() {
+        logger.log(Level.INFO, "Started websocket client loop");
+        executorService.submit(this::initClientRegisterAndRequestCompanion);
         executorService.submit(() -> {
             do {
                 try {
                     final Message message = getSocketClient().take();
                     logger.log(Level.INFO, "Got message: " + message);
-                    final String jsonString = gson.toJson(message);
-                    session.getRemote().sendString(jsonString);
-                } catch (InterruptedException | IOException e) {
-                    //e.printStackTrace();
+                    sendMessage(message);
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
                     logger.log(Level.WARNING, "Error(" + e.getLocalizedMessage() + " during message handle and sending");
                 }
             } while (true);
         });
+    }
+
+    private void sendMessage(Message message) {
+        if (message instanceof MessageGetUserByIdResponse) {
+            final MessageGetUserByIdResponse messageGetUserByIdResponse = (MessageGetUserByIdResponse) message;
+            logger.log(Level.INFO, "Got message: " + messageGetUserByIdResponse);
+            try {
+                final JsonObject jsonObject = gson.fromJson(messageGetUserByIdResponse.getJsonMessage(), JsonObject.class);
+                jsonObject.addProperty("type", "getbyid");
+                logger.log(Level.INFO, jsonObject.toString());
+                session.getRemote().sendString(jsonObject.toString());
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Error during sending json to ui " + e.getLocalizedMessage());
+            }
+        } else {
+            logger.log(Level.WARNING, "Unknown message type: " + message);
+        }
     }
 }

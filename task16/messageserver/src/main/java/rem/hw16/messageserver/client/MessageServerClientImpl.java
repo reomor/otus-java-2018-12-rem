@@ -21,6 +21,10 @@ public abstract class MessageServerClientImpl implements MessageServerClient {
     private Address addressTo;
     private Address addressFrom;
 
+    public MessageServerClientImpl(String host, int port, String prefix) {
+        this(host, port, prefix, "");
+    }
+
     public MessageServerClientImpl(String host, int port, String prefix, String companionPrefix) {
         try {
             this.socketClient = new SocketClientImpl(host, port);

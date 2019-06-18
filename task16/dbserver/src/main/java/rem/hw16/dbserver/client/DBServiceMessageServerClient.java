@@ -18,7 +18,7 @@ public class DBServiceMessageServerClient extends MessageServerClientImpl {
     private final DBService<UserDataSet> dbService;
 
     public DBServiceMessageServerClient(String host, int port, DBService<UserDataSet> dbService) {
-        super(host, port, "DB", "FRONT");
+        super(host, port, "DB");
         this.dbService = dbService;
         startClientLoop();
     }
